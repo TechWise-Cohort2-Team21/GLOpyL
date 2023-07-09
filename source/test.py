@@ -6,7 +6,7 @@ from pprint import pprint
 translator = Translator()
 
 # translate a spanish text to english text (by default)
-translation = translator.translate("Hola Mundo")
+#translation = translator.translate("Hola Mundo")
 #print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
 
 keywords_en2es = {"def":"defina", "if":"si", "return":"regresa", "True":"Cierto"}
@@ -38,11 +38,4 @@ with open("output.txt", "w") as spanish:
     for line in english:
         spanish.write(translate_line(line))
 english.close()
-spanish.close()
-
-
-
-spanish = open("output.txt", "r")
-for line in spanish:
-    print(line)
 spanish.close()
