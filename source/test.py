@@ -18,6 +18,7 @@ def translate_word(word: str) -> str:
     return "_".join([translator.translate(s, dest="es").text for s in words])
 
 def translate_line(line: str) -> str:
+    #todo: deal with lines that include "#"
     items = []
     current_word = ""
     for char in line:

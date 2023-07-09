@@ -1,3 +1,8 @@
 def is_two():
     if x == 2:
         return True
+
+from googletrans import Translator, constants
+from pprint import pprint
+
+translator = Translator()
