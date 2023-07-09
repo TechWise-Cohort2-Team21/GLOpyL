@@ -1,0 +1,3 @@
+def is_two():
+    if x == 2:
+        return True

@@ -7,7 +7,7 @@ translator = Translator()
 
 # translate a spanish text to english text (by default)
 translation = translator.translate("Hola Mundo")
-print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
+#print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
 
 keywords_en2es = {"def":"defina", "if":"si", "return":"regresa", "True":"Cierto"}
 

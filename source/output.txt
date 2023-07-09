@@ -1,0 +1,3 @@
+defina es_dos():
+    si X == 2:
+        regresa Cierto
