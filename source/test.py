@@ -19,7 +19,8 @@ keyword_file.close()
 def translate_word(word: str) -> str:
     if word in keywords:
         return keywords[word]
-    words = word.split("_") #change for other programming languages
+    #add logic to choose joining method based on programming language
+    words = word.split("_")
     return "_".join([translator.translate(s, dest="es").text for s in words])
 
 def translate_line(line: str) -> str:
