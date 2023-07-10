@@ -4,3 +4,4 @@
 - [ ] find better spanish translation for "else" and "elif"
 - [ ] base language choice on user input
 - [ ] add UI
+- [ ] add error handling for files that may not exist
