@@ -1,10 +1,3 @@
-
-# todos:
-#[ ] INCLUDE TYPES IN KEYWORDS
-#[ ] deal with lines that include comments?
-#[ ] find better spanish translation for "else" and "elif"
-
-
 from googletrans import Translator, constants
 from pprint import pprint
 
