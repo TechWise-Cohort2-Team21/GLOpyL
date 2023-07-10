@@ -1,6 +1,0 @@
-Meeting 1: July 8, 2023 6:00 to 9:30 PM EST
-* Created GitHub repository
-* Created slideshow and Google Drive Folder
-* Translated remaining Python keywords into Spanish
-* Found command to list Python keywords within code
-
