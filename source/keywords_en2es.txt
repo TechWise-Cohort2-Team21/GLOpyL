@@ -1,6 +1,8 @@
 and y
 as como
+async asincrónico
 assert afirma
+await espera
 break rompe
 class clase
 continue sigue

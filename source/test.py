@@ -9,11 +9,16 @@ translator = Translator()
 #translation = translator.translate("Hola Mundo")
 #print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
 
-keywords_en2es = {"def":"defina", "if":"si", "return":"regresa", "True":"Cierto"}
+keyword_file = open("keywords_en2es.txt", "r") #add logic here to select keyword file based on language
+keywords = {}
+for line in keyword_file:
+    old, trans = line.strip().split(" ")
+    keywords[old] = trans  
+keyword_file.close()
 
 def translate_word(word: str) -> str:
-    if word in keywords_en2es:
-        return keywords_en2es[word]
+    if word in keywords:
+        return keywords[word]
     words = word.split("_") #change for other programming languages
     return "_".join([translator.translate(s, dest="es").text for s in words])
 
@@ -36,6 +41,8 @@ def translate_line(line: str) -> str:
 english = open("input.txt", "r")
 with open("output.txt", "w") as spanish:
     for line in english:
-        spanish.write(translate_line(line))
+        translation = translate_line(line)
+        spanish.write(translation)
+        print(translation)
 english.close()
 spanish.close()

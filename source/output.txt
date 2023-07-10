@@ -2,7 +2,7 @@ defina es_dos():
     si X == 2:
         regresa Cierto
 
-de Google Translate importar Traducir, constantes
-de imprimir importar imprimir
+de Google Translate importa Traducir, constantes
+de imprimir importa imprimir
 
 traducir = Traducir()
