@@ -5,3 +5,4 @@
 - [ ] base language choice on user input
 - [ ] add UI
 - [ ] add error handling for files that may not exist
+- [ ] change output filetype so international characters can be displayed
