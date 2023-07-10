@@ -8,12 +8,19 @@ translator = Translator()
 #print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
 
 
-keyword_file = open("keywords_en2"+translated_language+".txt", "r")
-keywords = {}
-for line in keyword_file:
-    old, trans = line.strip().split(" ")
-    keywords[old] = trans  
-keyword_file.close()
+keyword_file_path = f"keywords_en2{translated_language}.txt"
+try:
+    with open(keyword_file_path, "r") as keyword_file:
+        keywords = {}
+        for line in keyword_file:
+            old, trans = line.strip().split(" ")
+            keywords[old] = trans
+except FileNotFoundError:
+    print(f"Keyword file '{keyword_file_path}' not found.")
+    exit(1)
+except Exception as e:
+    print(f"Error occurred while reading the keyword file: {str(e)}")
+    exit(1)
 
 
 def translate_word(word: str) -> str:
