@@ -5,7 +5,6 @@
 #[ ] find better spanish translation for "else" and "elif"
 
 
-#pip3 install googletrans==3.1.0a0
 from googletrans import Translator, constants
 from pprint import pprint
 
@@ -55,6 +54,6 @@ with open("output.txt", "w") as output:
     for line in input:
         translation = translate_line(line)
         output.write(translation)
-        print(translation[:-1])
+        #print(translation[:-1])
 input.close()
 output.close()
