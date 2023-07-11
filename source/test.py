@@ -57,10 +57,17 @@ def translate_line(line: str) -> str:
 
 
 #Applies translate functions to input file
-input = open("input.txt", "r")
-with open("output.txt", "w") as output:
-    for line in input:
-        translation = translate_line(line)
-        output.write(translation)
-input.close()
-output.close()
+input_file_path = "input.txt"
+output_file_path = "output.txt"
+
+try:
+    with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
+        for line in input_file:
+            translation = translate_line(line)
+            output_file.write(translation)
+except FileNotFoundError:
+    print(f"Input file '{input_file_path}' not found.")
+except Exception as e:
+    print(f"An error occurred during file operations: {str(e)}")
+except Exception as e:
+    print(f"An unexpected error occurred: {str(e)}")
