@@ -13,3 +13,4 @@ Meeting 3: July 10, 2023 7:00 to 9:00 PM EST (Monday)
 * Added error handling for files
 * Discussed translation of 'else' and 'elif' keywords (changed to 'demás')
 * Added comments to code for easier collaboration
+*worked on our presentation. 
