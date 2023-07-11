@@ -56,7 +56,7 @@ def translate_line(line: str) -> str:
     return "".join(words)
 
 
-#Applies translate functions to input file
+#Applies translate functions to input file and also handles any errors that may appear
 input_file_path = "input.txt"
 output_file_path = "output.txt"
 
