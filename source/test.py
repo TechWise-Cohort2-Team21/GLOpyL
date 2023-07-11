@@ -2,12 +2,17 @@ from googletrans import Translator, constants
 from pprint import pprint
 
 
+#Setup: select languages and create translator object
 translated_language = "es"
 programming_language = "python"
 translator = Translator()
+
+
+#Example of how to format/dissect output from a translation
 #print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
 
 
+#Keyword Dictionary: attempts to store correct keyword file in a dictionary
 keyword_file_path = f"keywords_en2{translated_language}.txt"
 try:
     with open(keyword_file_path, "r") as keyword_file:
@@ -23,6 +28,7 @@ except Exception as e:
     exit(1)
 
 
+#Translates individual keyword or variable/function name
 def translate_word(word: str) -> str:
     if word in keywords:
         return keywords[word]
@@ -31,6 +37,7 @@ def translate_word(word: str) -> str:
         return translator.translate(" ".join(words), dest=translated_language).text.replace(" ", "_")
 
 
+#Translates a line, ignoring all nonalphabetical characters
 def translate_line(line: str) -> str:
     words = []
     current_word = ""
@@ -49,11 +56,11 @@ def translate_line(line: str) -> str:
     return "".join(words)
 
 
+#Applies translate functions to input file
 input = open("input.txt", "r")
 with open("output.txt", "w") as output:
     for line in input:
         translation = translate_line(line)
         output.write(translation)
-        #print(translation[:-1])
 input.close()
 output.close()
