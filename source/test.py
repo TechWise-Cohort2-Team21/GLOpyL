@@ -1,12 +1,11 @@
+# original code. pre comments removal.
 from googletrans import Translator, constants
 from pprint import pprint
-
 
 #Setup: select languages and create translator object
 translated_language = "es"
 programming_language = "python"
 translator = Translator()
-
 
 #Example of how to format/dissect output from a translation
 #print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
@@ -37,8 +36,10 @@ def translate_word(word: str) -> str:
         return translator.translate(" ".join(words), dest=translated_language).text.replace(" ", "_")
 
 
-#Translates a line, ignoring all nonalphabetical characters
+#Translates a line, ignoring all nonalphabetical characters and removes comments
 def translate_line(line: str) -> str:
+    if line.startswith("#"):  # Skip lines that start with a '#'
+        return ""
     words = []
     current_word = ""
 
@@ -53,8 +54,8 @@ def translate_line(line: str) -> str:
             words.append(char)
 
     words.append(translate_word(current_word))
+    translated_line = "".join(words)
     return "".join(words)
-
 
 #Applies translate functions to input file and also handles any errors that may appear
 input_file_path = "input.txt"
