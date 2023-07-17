@@ -1,6 +1,6 @@
 # todos:
 - [ ] INCLUDE TYPES IN KEYWORDS
-- [ ] deal with lines that include comments?
+- [x] deal with lines that include comments?
 - [ ] make including comments in the result optional
 - [x] find better spanish translation for "else" and "elif"
   - [ ] verify new translations are coherent
