@@ -2,7 +2,7 @@
 from googletrans import Translator, constants
 from pprint import pprint
 
-#Setup: select languages and create translator object
+#Setup: select languages and create translator objects
 translated_language = "es"
 programming_language = "python"
 translator = Translator()
