@@ -1,5 +1,5 @@
 # todos:
-- [ ] INCLUDE TYPES IN KEYWORDS
+- [x] include types in keywords
 - [x] deal with lines that include comments?
 - [ ] make including comments in the result optional
 - [x] find better spanish translation for "else" and "elif"

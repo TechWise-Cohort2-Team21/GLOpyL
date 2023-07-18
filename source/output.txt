@@ -19,23 +19,23 @@ para lÌnea en archivo_de_palabras_clave:
 archivo_de_palabras_clave.cerca()
 
 
-defina traducir_palabra(palabra: calle) -> calle:
+defina traducir_palabra(palabra: secuencia) -> secuencia:
     si palabra en palabras_clave:
         regresa palabras_clave[palabra]
     si lenguaje_de_programaciÛn == "pitÛn":
         palabras = palabra.dividir("")
         regresa "".unirse([traducir.traducir(s, comenzar=idioma_traducido).texto para s en palabras])
 
-defina traducir_lÌnea(lÌnea: calle) -> calle:
+defina traducir_lÌnea(lÌnea: secuencia) -> secuencia:
     palabras = []
     palabra_actual = ""
 
     para carbonizarse en lÌnea:
         si carbonizarse.silfa() o carbonizarse == "":
             palabra_actual += carbonizarse
-        otrosi palabra_actual == "":
+        dem√°ssi palabra_actual == "":
             palabras.adjuntar(carbonizarse)
-        otro:
+        dem√°s:
             palabras.adjuntar(traducir_palabra(palabra_actual))
             palabra_actual = ""
             palabras.adjuntar(carbonizarse)
