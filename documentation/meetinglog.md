@@ -14,3 +14,11 @@ Meeting 3: July 10, 2023 7:00 to 9:00 PM EST (Monday)
 * Discussed translation of 'else' and 'elif' keywords (changed to 'demás')
 * Added comments to code for easier collaboration
 *worked on our presentation. 
+
+Meeting 4: July 17, 2023 7:40 to 9:00 PM EST (Monday)
+* added Python types to the keywords file. ex: str won't output streets anymore but now ofc string.
+* Added an option where the user can now choose if they want to include comments in the output file.
+* discussed practicing for the presentation.
+* worked more on the GUI
+* discussed the next language we will implement into the program and chose French.
+  
