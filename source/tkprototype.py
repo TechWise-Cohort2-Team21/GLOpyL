@@ -5,12 +5,12 @@ import test
 # Creates the window
 window = tk.Tk()
 window.title("GLOpyL")
-window.geometry("400x400")
+window.geometry("900x500")
 
 # Translates the input box, places in output box
 def translateClick():
-    outputTextBox.delete()
-    input = inputTextBox.get()
+    outputTextBox.delete("1.0", tk.END)
+    input = inputTextBox.get("1.0", tk.END)
     output = ""
     for line in input:
         translation = test.translate_line(line)
@@ -18,14 +18,14 @@ def translateClick():
     outputTextBox.insert(output)
 
 
-inputTextBox = tk.Text(window, height=3, width=9, font=("Arial", 16))
-inputTextBox.grid(column=1, row=1)
+inputTextBox = tk.Text(window, height=10, width=30, font=("Arial", 16))
+inputTextBox.grid(column=1, row=1, padx=10, pady=10)
 
-outputTextBox = tk.Text(window, height=3, width=9, font=("Arial", 16))
-outputTextBox.grid(column=3, row=1)
+outputTextBox = tk.Text(window, height=10, width=30, font=("Arial", 16))
+outputTextBox.grid(column=3, row=1, padx=10, pady=10)
 
-translateButton = tk.Button(window, text="Translate", font=("Arial", 16))
-translateButton.grid(column=2, row=2)
+translateButton = tk.Button(window, text="Translate", font=("Arial", 16), command=translateClick)
+translateButton.grid(column=2, row=2, padx=10, pady=10)
 
 
 
