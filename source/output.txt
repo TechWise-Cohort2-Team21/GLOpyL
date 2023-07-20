@@ -1,54 +1,8 @@
-defina son_dos():
-    si X == 2:
-        regresa Cierto
-
-de Google_Translate importa Traducir, constantes
-de imprimir importa imprimir
-
-
-idioma_traducido = "es"
-lenguaje_de_programación = "pitón"
-traducir = Traducir()
-
-
-archivo_de_palabras_clave = abierto("keywords_en2"+idioma_traducido+".TXT", "r")
-palabras_clave = {}
-para línea en archivo_de_palabras_clave:
-    viejo, trans = línea.banda().dividir(" ")
-    palabras_clave[viejo] = trans  
-archivo_de_palabras_clave.cerca()
-
-
+#pruebas pruebas para comentario eliminación manzana manzana manzana
 defina traducir_palabra(palabra: secuencia) -> secuencia:
     si palabra en palabras_clave:
         regresa palabras_clave[palabra]
     si lenguaje_de_programación == "pitón":
         palabras = palabra.dividir("")
-        regresa "".unirse([traducir.traducir(s, comenzar=idioma_traducido).texto para s en palabras])
+        regresa traducir.traducir(" ".unirse(palabras), comenzar=idioma_traducido).texto.reemplazar(" ", "")
 
-defina traducir_línea(línea: secuencia) -> secuencia:
-    palabras = []
-    palabra_actual = ""
-
-    para carbonizarse en línea:
-        si carbonizarse.silfa() o carbonizarse == "":
-            palabra_actual += carbonizarse
-        demÃ¡ssi palabra_actual == "":
-            palabras.adjuntar(carbonizarse)
-        demÃ¡s:
-            palabras.adjuntar(traducir_palabra(palabra_actual))
-            palabra_actual = ""
-            palabras.adjuntar(carbonizarse)
-
-    palabras.adjuntar(traducir_palabra(palabra_actual))
-    regresa "".unirse(palabras)
-
-
-aporte = abierto("aporte.TXT", "r")
-con abierto("producción.TXT", "En") como producción:
-    para línea en aporte:
-        traducción = traducir_línea(línea)
-        producción.escribir(traducción)
-        imprime(traducción[:-2])
-aporte.cerca()
-producción.cerca()
