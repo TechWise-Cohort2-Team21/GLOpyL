@@ -17,6 +17,8 @@ supported_languages = [
 
 # Variable to store the previous programming language
 previous_language = "python"
+include_comments = tk.BooleanVar()
+include_comments.set(True)  # Set to True by default
 
 
 # Translates the input box, places in output box
@@ -25,7 +27,7 @@ def translateClick():
     input_text = inputTextBox.get("1.0", tk.END)
     output = ""
     for line in input_text.splitlines():
-        translation = test.translate_line(line)
+        translation = test.translate_line(line, include_comments=include_comments.get())
         output += translation + "\n"
     outputTextBox.insert("1.0", output)
     save_to_rtf(output)
@@ -70,7 +72,10 @@ outputTextBox_label.grid(column=3, row=2)
 translateButton = tk.Button(window, text="Translate", font=("Arial", 16), command=translateClick, bg="Green")
 translateButton.grid(column=2, row=4, padx=10, pady=10)
 
-copyButton = tk.Button(window, text="Copy to Clipboard", font=("Arial", 16), command=copy_to_clipboard)
+copyButton = tk.Button(window, text="Copy", font=("Arial", 16), command=copy_to_clipboard)
 copyButton.grid(column=2, row=5, padx=10, pady=10)
+
+commentsCheckbox = tk.Checkbutton(window, text="Include Comments", variable=include_comments, font=("Arial", 14))
+commentsCheckbox.grid(column=1, row=4, padx=10, pady=10, sticky="w")
 
 window.mainloop()
