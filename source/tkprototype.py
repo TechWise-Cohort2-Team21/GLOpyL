@@ -10,7 +10,7 @@ from tkinter import messagebox
 window = tk.Tk()
 window.title("GLOpyL")
 window.geometry("900x500")
-
+# meow
 supported_languages = [
     "Spanish",
     "French"
