@@ -37,8 +37,8 @@ def translate_word(word: str) -> str:
         words = word.split("_")
         return translator.translate(" ".join(words), dest=translated_language).text.replace(" ", "_")
 
-#
-# meow#Translates a line, ignoring all nonalphabetical characters
+
+#Translates a line, ignoring all nonalphabetical characters
 def translate_line(line: str, include_comments: bool = True) -> str:
     if not include_comments and line.startswith("#"):
         return ""
