@@ -7,4 +7,4 @@
 - [ ] base language choice on user input
 - [ ] add UI
 - [x] add error handling for files that may not exist
-- [ ] change output filetype so international characters can be displayed
+- [x] change output filetype so international characters can be displayed

@@ -39,7 +39,10 @@ def translate_word(word: str) -> str:
 
 
 #Translates a line, ignoring all nonalphabetical characters
-def translate_line(line: str) -> str:
+def translate_line(line: str, include_comments: bool = True) -> str:
+    if not include_comments and line.startswith("#"):
+        return ""
+
     words = []
     current_word = ""
 
@@ -54,8 +57,8 @@ def translate_line(line: str) -> str:
             words.append(char)
 
     words.append(translate_word(current_word))
-    return "".join(words)
-
+    translated_line = "".join(words)
+    return translated_line
 
 #Applies translate functions to input file
 input = open("input.txt", "r")
