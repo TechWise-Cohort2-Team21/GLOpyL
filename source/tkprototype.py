@@ -75,7 +75,7 @@ translateButton.grid(column=2, row=4, padx=10, pady=10)
 copyButton = tk.Button(window, text="Copy", font=("Arial", 16), command=copy_to_clipboard)
 copyButton.grid(column=2, row=5, padx=10, pady=10)
 
-commentsCheckbox = tk.Checkbutton(window, text="Include Comments", variable=include_comments, font=("Arial", 14))
+commentsCheckbox = tk.Checkbutton(window, text="Include Commentss", variable=include_comments, font=("Arial", 14))
 commentsCheckbox.grid(column=1, row=4, padx=10, pady=10, sticky="w")
 
 window.mainloop()
