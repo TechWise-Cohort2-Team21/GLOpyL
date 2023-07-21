@@ -1,8 +1,10 @@
-# Prototype Tkinter GUI
 import tkinter as tk
 from tkinter import ttk
 import test
 import codecs
+from langdetect import detect
+import pyperclip
+from tkinter import messagebox
 
 # Creates the window
 window = tk.Tk()
@@ -14,19 +16,17 @@ supported_languages = [
     "French"
 ]
 
-include_comments_var = tk.BooleanVar()
-include_comments_var.set(True)
+# Variable to store the previous programming language
+previous_language = "python"
 
 
 # Translates the input box, places in output box
-
 def translateClick():
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
-    include_comments = include_comments_var.get()  # Get the user's choice
     output = ""
     for line in input_text.splitlines():
-        translation = test.translate_line(line, include_comments)  # Pass both line and include_comments
+        translation = test.translate_line(line)
         output += translation + "\n"
     outputTextBox.insert("1.0", output)
     save_to_rtf(output)
@@ -38,10 +38,17 @@ def save_to_rtf(output):
 
 
 def comboclick(event):
+    global previous_language
     if language_selection.get() == "Spanish":
         test.translated_language = "es"
     elif language_selection.get() == "French":
         test.translated_language = "fr"
+
+
+def copy_to_clipboard():
+    translated_code = inputTextBox.get("1.0", tk.END)
+    pyperclip.copy(translated_code)
+    tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
 
 
 language_selection = ttk.Combobox(window, value=supported_languages, font=("Arial", 15), width=10)
@@ -55,11 +62,10 @@ inputTextBox.grid(column=1, row=2, padx=10, pady=10)
 outputTextBox = tk.Text(window, height=10, width=30, font=("Arial", 16))
 outputTextBox.grid(column=3, row=2, padx=10, pady=10)
 
-includeCommentsCheckbox = tk.Checkbutton(window, text="Include Comments", variable=include_comments_var,
-                                         font=("Arial", 15))
-includeCommentsCheckbox.grid(column=2, row=2, padx=10, pady=10)
-
 translateButton = tk.Button(window, text="Translate", font=("Arial", 16), command=translateClick, bg="Green")
 translateButton.grid(column=2, row=3, padx=10, pady=10)
+
+copyButton = tk.Button(window, text="Copy to Clipboard", font=("Arial", 16), command=copy_to_clipboard)
+copyButton.grid(column=2, row=4, padx=10, pady=10)
 
 window.mainloop()
