@@ -17,12 +17,12 @@ supported_languages = [
 # Translates the input box, places in output box
 def translateClick():
     outputTextBox.delete("1.0", tk.END)
-    input = inputTextBox.get("1.0", tk.END)
+    input_text = inputTextBox.get("1.0", tk.END)
     output = ""
-    for line in input:
+    for line in input_text.splitlines():
         translation = test.translate_line(line)
-        output.join(translation)
-    outputTextBox.insert(output)
+        output += translation + "\n"
+    outputTextBox.insert("1.0", output)
 
 def comboclick(event):
     if language_selection.get() == "Spanish":
