@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-import test
+from test import translate_line
 import codecs
 import pyperclip
 from tkinter import messagebox
@@ -27,7 +27,7 @@ def translateClick():
     input_text = inputTextBox.get("1.0", tk.END)
     output = ""
     for line in input_text.splitlines():
-        translation = test.translate_line(line, include_comments=include_comments.get())
+        translation = translate_line(line, include_comments=include_comments.get())
         output += translation + "\n"
     outputTextBox.insert("1.0", output)
     save_to_rtf(output)
@@ -41,9 +41,9 @@ def save_to_rtf(output):
 def comboclick(event):
     global previous_language
     if language_selection.get() == "Spanish":
-        test.translated_language = "es"
+        translated_language = "es"
     elif language_selection.get() == "French":
-        test.translated_language = "fr"
+        translated_language = "fr"
 
 
 def copy_to_clipboard():
@@ -75,7 +75,7 @@ translateButton.grid(column=2, row=4, padx=10, pady=10)
 copyButton = tk.Button(window, text="Copy", font=("Arial", 16), command=copy_to_clipboard)
 copyButton.grid(column=2, row=5, padx=10, pady=10)
 
-commentsCheckbox = tk.Checkbutton(window, text="Include Commentss", variable=include_comments, font=("Arial", 14))
+commentsCheckbox = tk.Checkbutton(window, text="Include Comments", variable=include_comments, font=("Arial", 14))
 commentsCheckbox.grid(column=1, row=4, padx=10, pady=10, sticky="w")
 
 window.mainloop()
