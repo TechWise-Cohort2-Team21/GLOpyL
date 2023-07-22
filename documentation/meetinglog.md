@@ -23,3 +23,5 @@ Meeting 4: July 17, 2023 7:40 to 9:00 PM EST (Monday)
 * discussed practicing for the presentation.
 * worked more on the GUI
 * discussed the next language we will implement into the program and chose French.
+
+Second Presentation: July 19, 2023 7:00 to 9:00 PM EST (Wednesday)
