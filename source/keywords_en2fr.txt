@@ -27,26 +27,26 @@ or soit
 pass passe
 print imprime
 raise soulève
-return 
-try 
-while 
-with 
-yield 
-True 
-False 
-None 
-str 
-int 
-float 
-complex 
-list 
-tuple 
-range 
-dict 
-set 
-frozenset 
-bool 
-bytes 
-bytearray 
-memoryview 
-NoneType 
+return rends
+try essaie (essaye)
+while pendant
+with avec
+yield cède
+True Vrai
+False Faux (Fausse)
+None Aucun
+str chaîne
+int entier
+float flottant
+complex complexe
+list liste
+tuple uplet
+range gamme
+dict dictionnaire (dico)
+set collection
+frozenset collectiongelé
+bool booléen
+bytes octets
+bytearray tableaudoctets
+memoryview vuedelamémoire
+NoneType AucunType

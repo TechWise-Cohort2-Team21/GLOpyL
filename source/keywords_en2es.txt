@@ -21,7 +21,7 @@ import importa
 in en
 is es
 lambda lambda
-nonlocal no_local
+nonlocal nolocal
 not no
 or o
 pass pasa
@@ -40,13 +40,13 @@ int entero
 float flotante
 complex complejo
 list lista
-tuple tuple
+tuple tupla
 range gama
 dict diccionario
 set colección
-frozenset colección_inmovilada
+frozenset coleccióninmovilada
 bool booleano
 bytes bytes
-bytearray matriz_de_bytes
-memoryview vista_de_memoria
-NoneType clase_para_nada
+bytearray matrizdebytes
+memoryview vistadememoria
+NoneType ClaseParaNada
