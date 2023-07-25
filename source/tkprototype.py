@@ -33,9 +33,6 @@ def translateClick():
         output += translation + "\n"
     outputTextBox.insert("1.0", output)
     save_to_rtf(output)
-    fake_dictionary = {"else":"démas"}
-    commentsCheckbox.config(text = fake_dictionary["else"])
-
 
 def save_to_rtf(output):
     with codecs.open("output.rtf", "w", "utf-8") as output_file:
