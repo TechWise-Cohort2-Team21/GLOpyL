@@ -1,8 +1,0 @@
-#testing testing for comment removal apple apple apple
-def translate_word(word: str) -> str:
-    if word in keywords:
-        return keywords[word]
-    if programming_language == "python":
-        words = word.split("_")
-        return translator.translate(" ".join(words), dest=translated_language).text.replace(" ", "_")
-
