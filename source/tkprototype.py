@@ -76,8 +76,8 @@ def copy_output_to_clipboard():
 
 titleFrame = Frame(window, bg="lightgray")
 titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
-titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Arial", 40), background="lightgray") #height=20, width=50,
-titleLabel.place(relx=0.1, rely=0.3)
+titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Century Gothic", 40), background="lightgray") #height=20, width=50,
+titleLabel.place(relx=0.1, rely=0.2)
 # descLabel = ttk.Label(titleFrame, text="subverting English's monopoly on code.", font=("Arial", 18), background="lightgray")
 # descLabel.place(relx=0.32, rely=0.55)
 
@@ -88,12 +88,12 @@ inputFrame.place(relx=0.1, rely=0.2, relwidth=0.4, relheight=0.5) #, padx=10, pa
 
 inputHeaderFrame = Frame(inputFrame, width=400, height=50)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=0.9, relheight=0.1)
-inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font="Arial")
+inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Arial", 15))
 inputTextBox_label.place(relx=0, rely=0)
-copyInputButton = tk.Button(inputHeaderFrame, text="Copy", font=("Arial", 16), command=copy_input_to_clipboard)
-copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=1) #, padx=10, pady=10
+copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Arial", 12), command=copy_input_to_clipboard)
+copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8) #, padx=10, pady=10
 
-inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Arial", 10))
+inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Lucida Console", 10))
 inputTextBox.place(relx=0, rely=0.1, relwidth=0.9, relheight=0.9)
 
 
@@ -107,15 +107,15 @@ language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, 
 language_selection.current(0)
 language_selection.bind("<<ComboboxSelected>>", comboclick)
 language_selection.place(relx=0, rely=0)
-copyOutputButton = tk.Button(outputHeaderFrame, text="Copy", font=("Arial", 16), command=copy_output_to_clipboard)
-copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=1)
+copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Arial", 12), command=copy_output_to_clipboard)
+copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
 
-outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Arial", 10))
+outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Lucida Console", 10))
 outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
 
 
 #######
-translateButton = tk.Button(window, text="Translate", font=("Arial", 25), command=translateClick, bg="lightgray")
+translateButton = tk.Button(window, text="Translate", font=("Century Gothic", 25), command=translateClick, bg="lightgray")
 translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
 
 #to be included later as an optional setting
