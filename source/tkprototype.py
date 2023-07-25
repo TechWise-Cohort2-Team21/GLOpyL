@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
+import keywords
 from test import translate_line
+from test import translated_language
 import codecs
 import pyperclip
 from tkinter import messagebox
@@ -14,12 +16,12 @@ supported_languages = [
     "Spanish",
     "French"
 ]
+currentkeywords = keywords.es
 
 # Variable to store the previous programming language
 previous_language = "python"
 include_comments = tk.BooleanVar()
 include_comments.set(True)  # Set to True by default
-
 
 # Translates the input box, places in output box
 def translateClick():
@@ -27,10 +29,12 @@ def translateClick():
     input_text = inputTextBox.get("1.0", tk.END)
     output = ""
     for line in input_text.splitlines():
-        translation = translate_line(line, include_comments=include_comments.get())
+        translation = translate_line(line, translated_language, currentkeywords, include_comments=include_comments.get())
         output += translation + "\n"
     outputTextBox.insert("1.0", output)
     save_to_rtf(output)
+    fake_dictionary = {"else":"démas"}
+    commentsCheckbox.config(text = fake_dictionary["else"])
 
 
 def save_to_rtf(output):
@@ -39,12 +43,14 @@ def save_to_rtf(output):
 
 
 def comboclick(event):
-    global previous_language
+    #global previous_language
+    global currentkeywords
     if language_selection.get() == "Spanish":
         translated_language = "es"
+        currentkeywords = keywords.es
     elif language_selection.get() == "French":
         translated_language = "fr"
-
+        currentkeywords = keywords.fr
 
 def copy_to_clipboard():
     translated_code = outputTextBox.get("1.0", tk.END)
