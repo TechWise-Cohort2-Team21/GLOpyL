@@ -74,12 +74,18 @@ def copy_output_to_clipboard():
     tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
 
 
-titleLabel = ttk.Label(window, text="GLOpyL", font=("Arial", 50)) #height=20, width=50, 
-titleLabel.grid(column=1, row=0, padx=100, pady=30)
+titleLabel = ttk.Label(window, text="GLOpyL", font=("Arial", 50)) #height=20, width=50,
+titleLabel.pack(side=tk.TOP)
+########### 
+#titleLabel.grid(column=1, row=0, padx=100, pady=30)
 
 
-inputFrame = Frame(window, width=400, height= 400)
-inputFrame.grid(row=1, column=0, padx=50) #, padx=10, pady=5
+translationFrame = Frame(window, width=900, height=400)
+translationFrame.pack(side=tk.TOP)
+
+
+inputFrame = Frame(translationFrame, width=400, height= 400)
+inputFrame.grid(row=0, column=0, padx=50) #, padx=10, pady=5
 
 inputHeaderFrame = Frame(inputFrame, width=400, height=50)
 inputHeaderFrame.grid(row=0, column=0)
@@ -92,8 +98,8 @@ inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Arial", 16))
 inputTextBox.grid(column=0, row=1) #, padx=10, pady=10
 
 
-outputFrame = Frame(window, width=400, height=400)
-outputFrame.grid(row=1, column=1)
+outputFrame = Frame(translationFrame, width=400, height=400)
+outputFrame.grid(row=0, column=1, padx=50)
 
 outputHeaderFrame = Frame(outputFrame, width=400, height=50)
 outputHeaderFrame.grid(row=0, column=0)
@@ -109,9 +115,12 @@ outputTextBox.grid(column=0, row=1)
 
 
 translateButton = tk.Button(window, text="Translate", font=("Arial", 16), command=translateClick, bg="Green")
-translateButton.grid(column=2, row=4, padx=10, pady=10)
+translateButton.pack(side=tk.TOP, pady=20)
+#######
+#translateButton.grid(column=2, row=4, padx=10, pady=10)
 
-commentsCheckbox = tk.Checkbutton(window, text="Include Comments", variable=include_comments, font=("Arial", 14))
-commentsCheckbox.grid(column=1, row=4, padx=10, pady=10, sticky="w")
+#to be included later as an optional setting
+# commentsCheckbox = tk.Checkbutton(window, text="Include Comments", variable=include_comments, font=("Arial", 14))
+# commentsCheckbox.grid(column=0, row=5, sticky="w") #, padx=10, pady=10
 
 window.mainloop()
