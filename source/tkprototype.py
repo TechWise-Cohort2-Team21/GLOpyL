@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import Frame
+import keywords
 from code_translator import translate_line
 import codecs
 import pyperclip
@@ -10,6 +11,7 @@ from tkinter import messagebox
 #Global variables
 translated_language = "es"
 programming_language = "python"
+current_keywords = keywords.es
 supported_languages = [
     "Spanish Python",
     "French Python"
@@ -38,7 +40,7 @@ def translateClick():
     input_text = inputTextBox.get("1.0", tk.END)
     output = ""
     for line in input_text.splitlines():
-        translation = translate_line(line, translated_language, include_comments=include_comments.get())
+        translation = translate_line(line, translated_language, current_keywords, include_comments=include_comments.get())
         output += translation + "\n"
     outputTextBox.insert("1.0", output)
 
@@ -50,11 +52,14 @@ def translateClick():
 
 
 def comboclick(event):
+    global current_keywords
     global translated_language
     if language_selection.get() == "Spanish Python":
         translated_language = "es"
+        current_keywords = keywords.es
     elif language_selection.get() == "French Python":
         translated_language = "fr"
+        current_keywords = keywords.fr
 
 
 def copy_input_to_clipboard():
