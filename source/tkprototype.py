@@ -91,6 +91,29 @@ def saveFile():
     with open("translated_code" + fileType, "w", encoding="utf-8") as file:
         file.write(translated_code)
 
+def openSettings():
+
+    settingsWindow = tk.Toplevel(window)
+    settingsWindow.title("Settings")
+
+    include_comments = tk.BooleanVar()  # This variable will hold the state of the checkbox
+    include_comments.set(True)  # Set the initial state to True
+    include_comments_checkbox = tk.Checkbutton(settingsWindow, text="Include Comments", variable=include_comments)
+    include_comments_checkbox.pack()
+
+
+    settingsWindow_width = 200
+    settingsWindow_height = 200
+    main_window_x = window.winfo_x()
+    main_window_y = window.winfo_y()
+    main_window_width = window.winfo_width()
+    main_window_height = window.winfo_height()
+    settingsWindow.geometry(f"{settingsWindow_width}x{settingsWindow_height}"
+                            f"+{main_window_x + main_window_width//2 - settingsWindow_width//2}"
+                            f"+{main_window_y + main_window_height//2 - settingsWindow_height//2}")
+
+
+
 
 titleFrame = Frame(window, bg="lightgray")
 titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
@@ -115,7 +138,7 @@ inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light
 inputTextBox.place(relx=0, rely=0.1, relwidth=0.9, relheight=0.9)
 
 
-############
+
 outputFrame = Frame(window, width=400, height=400)
 outputFrame.place(relx=0.5, rely=0.2, relwidth=0.4, relheight=0.5)
 
@@ -143,7 +166,13 @@ fileTypeOptionMenu.place(relx=0.63, rely=0.75)  # Adjust the coordinates and dim
 
 saveButton = tk.Button(window, text="Save", command=saveFile)
 saveButton.place(relx=0.63, rely=0.8)  # Adjust the coordinates and dimensions as needed
+
+
+# Create the "Settings" button
+settingsButton = tk.Button(window, text="Settings", command=openSettings)  # Replace openSettings with the function you want to call when the button is clicked
+settingsButton.place(relx=0.8, rely=0.9, relwidth=0.15, relheight=0.05)  # Adjust the coordinates and dimensions as needed
 ...
+
 
 
 #to be included later as an optional setting
