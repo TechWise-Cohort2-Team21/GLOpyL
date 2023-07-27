@@ -78,6 +78,7 @@ def copy_output_to_clipboard():
     pyperclip.copy(translated_code)
     tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
 
+
 translated_code = "..."  # the translated code
 
 
@@ -131,21 +132,19 @@ outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Lig
 outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
 
 
-fileTypeVar = tk.StringVar()
 
-fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".py", ".txt", ".csv")
-fileTypeOptionMenu.pack()
-
-saveButton = tk.Button(window, text="Save", command=saveFile)
-saveButton.pack()
-
-
-
-
-
-#######
 translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translateClick, bg="lightgray")
 translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
+
+
+fileTypeVar = tk.StringVar()
+fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".py", ".txt", ".csv")
+fileTypeOptionMenu.place(relx=0.63, rely=0.75)  # Adjust the coordinates and dimensions as needed
+
+saveButton = tk.Button(window, text="Save", command=saveFile)
+saveButton.place(relx=0.63, rely=0.8)  # Adjust the coordinates and dimensions as needed
+...
+
 
 #to be included later as an optional setting
 # commentsCheckbox = tk.Checkbutton(window, text="Include Comments", variable=include_comments, font=("Arial", 14))
