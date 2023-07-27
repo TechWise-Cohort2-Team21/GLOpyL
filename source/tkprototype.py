@@ -36,13 +36,18 @@ include_comments.set(True)  # Set to True by default
 
 # Translates the input box, places in output box
 def translateClick():
+    global translated_code  # This allows us to modify the global variable
+
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
     output = ""
     for line in input_text.splitlines():
         translation = translate_line(line, translated_language, current_keywords, include_comments=include_comments.get())
         output += translation + "\n"
+
     outputTextBox.insert("1.0", output)
+    translated_code = output  # Save the translated code to the global variable
+
 
 
 #to be used later for export purposes
@@ -72,6 +77,18 @@ def copy_output_to_clipboard():
     translated_code = outputTextBox.get("1.0", tk.END)
     pyperclip.copy(translated_code)
     tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
+
+translated_code = "..."  # the translated code
+
+
+# Then in your saveFile function...
+def saveFile():
+    global translated_code  # This allows us to access the global variable
+    # Get the selected file type
+    fileType = fileTypeVar.get()
+    # Save the translated code as a file of the selected type
+    with open("translated_code" + fileType, "w", encoding="utf-8") as file:
+        file.write(translated_code)
 
 
 titleFrame = Frame(window, bg="lightgray")
@@ -112,6 +129,16 @@ copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
 
 outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
 outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
+
+
+fileTypeVar = tk.StringVar()
+
+fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".py", ".txt", ".csv")
+fileTypeOptionMenu.pack()
+
+saveButton = tk.Button(window, text="Save", command=saveFile)
+saveButton.pack()
+
 
 
 

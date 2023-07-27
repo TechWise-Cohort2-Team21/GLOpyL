@@ -8,6 +8,7 @@ translator = Translator()
 # Initialize the translation memory
 translation_memory = {}
 
+
 def translate_word(word: str, lang: str, current_keywords) -> str:
     # Check if the translation memory for this language exists
     if lang not in translation_memory:
@@ -56,5 +57,6 @@ def translate_line(line: str, lang: str, current_keywords, include_comments: boo
     words.append(translate_word(current_word, lang, current_keywords))
     translated_line = "".join(words)
     return translated_line
+
 # Example of how to format/dissect output from a translation
 # print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
