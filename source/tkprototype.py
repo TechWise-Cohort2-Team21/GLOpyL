@@ -114,6 +114,8 @@ outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Lig
 outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
 
 
+
+
 #######
 translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translateClick, bg="lightgray")
 translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)

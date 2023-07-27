@@ -5,7 +5,18 @@ import keywords
 translator = Translator()
 
 # Translates individual keyword or variable/function name
+# Initialize the translation memory
+translation_memory = {}
+
 def translate_word(word: str, lang: str, current_keywords) -> str:
+    # Check if the translation memory for this language exists
+    if lang not in translation_memory:
+        translation_memory[lang] = {}
+
+    # If the word has been translated before, use the saved translation
+    if word in translation_memory[lang]:
+        return translation_memory[lang][word]
+
     if lang == "es":
         dictionary = keywords.es
     elif lang == "fr":
@@ -14,9 +25,16 @@ def translate_word(word: str, lang: str, current_keywords) -> str:
         dictionary = current_keywords
 
     if word in dictionary:
-        return dictionary[word]
-    words = word.split("_")
-    return translator.translate(" ".join(words), dest=lang).text.replace(" ", "_")
+        translated_word = dictionary[word]
+    else:
+        words = word.split("_")
+        translated_word = translator.translate(" ".join(words), dest=lang).text.replace(" ", "_")
+
+    # Save the translation in the translation memory
+    translation_memory[lang][word] = translated_word
+
+    return translated_word
+
 
 def translate_line(line: str, lang: str, current_keywords, include_comments: bool = True) -> str:
     if not include_comments and line.startswith("#"):
