@@ -31,3 +31,12 @@ Meeting 5: July 24, 2023 7:00 to 9:00 PM EST (Monday)
 * brainstormed future things to implement into the program
 * started 2nd of augusts presentation
 * started working on chinese keywords.
+
+Meeting 6: July 31, 2023 7:00 to 9:00 PM EST (Monday)
+* decided to remove CSV export file option
+* will format python export option with functional english code and commented translated code
+* plan to add RTF export option
+* color keywords are in progress but not yet functional
+* dismissed(?) object oriented approach for the moment
+* considered exporting final product as an EXE file (requires more research)
+* finished slideshow for wednesday
