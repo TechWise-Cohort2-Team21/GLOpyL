@@ -7,8 +7,8 @@ import codecs
 import pyperclip
 from tkinter import messagebox
 
-
-#Global variables
+# Global variables
+translatedCodeText = None
 translated_language = "es"
 programming_language = "python"
 current_keywords = keywords.es
@@ -17,17 +17,15 @@ supported_languages = [
     "French Python"
 ]
 
-
 # Creates the window
 window = tk.Tk()
 window.title("GLOpyL")
-#window.geometry("900x500")
+# window.geometry("900x500")
 screen_width = window.winfo_screenwidth()
 screen_height = window.winfo_screenheight()
 window.geometry(f'{screen_width}x{screen_height}')
 window.minsize(900, 500)
 window.maxsize(screen_width, screen_height)
-
 
 # Setup for comments checkbox
 include_comments = tk.BooleanVar()
@@ -36,21 +34,24 @@ include_comments.set(True)  # Set to True by default
 
 # Translates the input box, places in output box
 def translateClick():
+    global includeComments
     global translated_code  # This allows us to modify the global variable
 
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
     output = ""
     for line in input_text.splitlines():
-        translation = translate_line(line, translated_language, current_keywords, include_comments=include_comments.get())
+        if not include_comments.get() and line.lstrip().startswith("#"):
+            continue
+        translation = translate_line(line, translated_language, current_keywords)
         output += translation + "\n"
 
     outputTextBox.insert("1.0", output)
     translated_code = output  # Save the translated code to the global variable
 
+    # to be used later for export purposes
 
 
-#to be used later for export purposes
 # def save_to_rtf(output):
 #     with codecs.open("output.rtf", "w", "utf-8") as output_file:
 #         output_file.write(output)
@@ -91,16 +92,20 @@ def saveFile():
     with open("translated_code" + fileType, "w", encoding="utf-8") as file:
         file.write(translated_code)
 
+
+include_comments = tk.BooleanVar()
+include_comments.set(True)
+
+
 def openSettings():
+    global include_comments
 
     settingsWindow = tk.Toplevel(window)
     settingsWindow.title("Settings")
 
-    include_comments = tk.BooleanVar()  # This variable will hold the state of the checkbox
-    include_comments.set(True)  # Set the initial state to True
+    # Update the include_comments variable based on the user's selection
     include_comments_checkbox = tk.Checkbutton(settingsWindow, text="Include Comments", variable=include_comments)
     include_comments_checkbox.pack()
-
 
     settingsWindow_width = 200
     settingsWindow_height = 200
@@ -109,15 +114,14 @@ def openSettings():
     main_window_width = window.winfo_width()
     main_window_height = window.winfo_height()
     settingsWindow.geometry(f"{settingsWindow_width}x{settingsWindow_height}"
-                            f"+{main_window_x + main_window_width//2 - settingsWindow_width//2}"
-                            f"+{main_window_y + main_window_height//2 - settingsWindow_height//2}")
-
-
+                            f"+{main_window_x + main_window_width // 2 - settingsWindow_width // 2}"
+                            f"+{main_window_y + main_window_height // 2 - settingsWindow_height // 2}")
 
 
 titleFrame = Frame(window, bg="lightgray")
 titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
-titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40), background="lightgray") #height=20, width=50,
+titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),
+                       background="lightgray")  # height=20, width=50,
 titleLabel.place(relx=0.1, rely=0.2)
 # descLabel = ttk.Label(titleFrame, text="subverting English's monopoly on code.", font=("Arial", 18), background="lightgray")
 # descLabel.place(relx=0.32, rely=0.55)
@@ -125,57 +129,57 @@ titleLabel.place(relx=0.1, rely=0.2)
 
 #############
 inputFrame = Frame(window)
-inputFrame.place(relx=0.1, rely=0.2, relwidth=0.4, relheight=0.5) #, padx=10, pady=5
+inputFrame.place(relx=0.1, rely=0.2, relwidth=0.4, relheight=0.5)  # , padx=10, pady=5
 
 inputHeaderFrame = Frame(inputFrame, width=400, height=50)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=0.9, relheight=0.1)
 inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Bahnschrift Light", 15))
 inputTextBox_label.place(relx=0, rely=0)
-copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_input_to_clipboard)
-copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8) #, padx=10, pady=10
+copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12),
+                            command=copy_input_to_clipboard)
+copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)  # , padx=10, pady=10
 
 inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
 inputTextBox.place(relx=0, rely=0.1, relwidth=0.9, relheight=0.9)
-
-
 
 outputFrame = Frame(window, width=400, height=400)
 outputFrame.place(relx=0.5, rely=0.2, relwidth=0.4, relheight=0.5)
 
 outputHeaderFrame = Frame(outputFrame, width=400, height=50)
 outputHeaderFrame.place(relx=0.1, rely=0, relwidth=0.9, relheight=0.1)
-language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15), state="readonly") #width=15
+
+language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15),
+                                  state="readonly")  # width=15
 language_selection.current(0)
 language_selection.bind("<<ComboboxSelected>>", comboclick)
 language_selection.place(relx=0, rely=0)
-copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_output_to_clipboard)
+
+copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12),
+                             command=copy_output_to_clipboard)
 copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
 
 outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
 outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
 
-
-
-translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translateClick, bg="lightgray")
+translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translateClick,
+                            bg="lightgray")
 translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
 
-
 fileTypeVar = tk.StringVar()
-fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".py", ".txt", ".csv")
+fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar,".txt")
 fileTypeOptionMenu.place(relx=0.63, rely=0.75)  # Adjust the coordinates and dimensions as needed
 
 saveButton = tk.Button(window, text="Save", command=saveFile)
 saveButton.place(relx=0.63, rely=0.8)  # Adjust the coordinates and dimensions as needed
 
-
 # Create the "Settings" button
-settingsButton = tk.Button(window, text="Settings", command=openSettings)  # Replace openSettings with the function you want to call when the button is clicked
-settingsButton.place(relx=0.8, rely=0.9, relwidth=0.15, relheight=0.05)  # Adjust the coordinates and dimensions as needed
+settingsButton = tk.Button(window, text="Settings",
+                           command=openSettings)  # Replace openSettings with the function you want to call when the button is clicked
+settingsButton.place(relx=0.8, rely=0.9, relwidth=0.15,
+                     relheight=0.05)  # Adjust the coordinates and dimensions as needed
 ...
 
-
-
-#to be included later as an optional setting
+# to be included later as an optional setting
 # commentsCheckbox = tk.Checkbutton(window, text="Include Comments", variable=include_comments, font=("Arial", 14))
 # commentsCheckbox.grid(column=0, row=5, sticky="w") #, padx=10, pady=10
 

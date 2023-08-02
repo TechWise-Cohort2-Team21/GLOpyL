@@ -1,6 +1,9 @@
 from googletrans import Translator, constants
 from pprint import pprint
 import keywords
+import csv
+import os
+
 
 translator = Translator()
 
