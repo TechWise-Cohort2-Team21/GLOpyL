@@ -6,6 +6,7 @@ from code_translator import translate_line
 import codecs
 import pyperclip
 from tkinter import messagebox
+from langdetect import detect, detect_langs
 
 # Global variables
 translatedCodeText = None
@@ -31,14 +32,21 @@ window.maxsize(screen_width, screen_height)
 include_comments = tk.BooleanVar()
 include_comments.set(True)  # Set to True by default
 
+def extract_comments(code):
+    comments = [line for line in code.splitlines() if line.strip().startswith("#")]
+    return " ".join(comments)
 
 # Translates the input box, places in output box
 def translateClick():
-    global includeComments
     global translated_code  # This allows us to modify the global variable
 
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
+
+    # Detect human language of the entire code
+    human_language = detect(input_text)
+    detected_language_var.set(f"{human_language} Python")
+
     output = ""
     for line in input_text.splitlines():
         if not include_comments.get() and line.lstrip().startswith("#"):
@@ -48,14 +56,12 @@ def translateClick():
 
     outputTextBox.insert("1.0", output)
     translated_code = output  # Save the translated code to the global variable
-
     # to be used later for export purposes
 
 
 # def save_to_rtf(output):
 #     with codecs.open("output.rtf", "w", "utf-8") as output_file:
 #         output_file.write(output)
-
 
 def comboclick(event):
     global current_keywords
@@ -123,6 +129,7 @@ titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
 titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),
                        background="lightgray")  # height=20, width=50,
 titleLabel.place(relx=0.1, rely=0.2)
+
 # descLabel = ttk.Label(titleFrame, text="subverting English's monopoly on code.", font=("Arial", 18), background="lightgray")
 # descLabel.place(relx=0.32, rely=0.55)
 
@@ -133,8 +140,18 @@ inputFrame.place(relx=0.1, rely=0.2, relwidth=0.4, relheight=0.5)  # , padx=10, 
 
 inputHeaderFrame = Frame(inputFrame, width=400, height=50)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=0.9, relheight=0.1)
-inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Bahnschrift Light", 15))
-inputTextBox_label.place(relx=0, rely=0)
+
+# Create a variable to hold the detected language
+detected_language_var = tk.StringVar()
+detected_language_var.set("Detecting language...")  # Default text
+
+# Create a label using the variable
+detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var, font=("Bahnschrift Light", 15))
+detected_language_label.place(relx=0, rely=0)  # Adjust the placement as needed
+
+# inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Bahnschrift Light", 15))
+# inputTextBox_label.place(relx=0, rely=0)
+
 copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12),
                             command=copy_input_to_clipboard)
 copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)  # , padx=10, pady=10
