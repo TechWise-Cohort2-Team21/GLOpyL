@@ -8,6 +8,8 @@ import pyperclip
 from tkinter import messagebox
 from langdetect import detect, detect_langs
 import threading
+from langdetect.lang_detect_exception import LangDetectException
+
 
 # Global variables
 translatedCodeText = None
@@ -22,14 +24,13 @@ supported_languages = [
 # Creates the window
 window = tk.Tk()
 window.title("GLOpyL")
-# window.geometry("900x500")
 screen_width = window.winfo_screenwidth()
 screen_height = window.winfo_screenheight()
 window.geometry(f'{screen_width}x{screen_height}')
 window.minsize(900, 500)
 window.maxsize(screen_width, screen_height)
 
-# Setup for comments checkbox
+
 include_comments = tk.BooleanVar()
 include_comments.set(True)  # Set to True by default
 
@@ -39,27 +40,29 @@ def extract_comments(code):
     return " ".join(comments)
 
 
-# Translates the input box, places in output box
 def translateClick():
-    global translated_code  # This allows us to modify the global variable
+    global translated_code
 
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
 
-    # Detect human language of the entire code
+
     human_language = detect(input_text)
     detected_language_var.set(f"{human_language} Python")
 
-    output = ""
+    translated_output = ""
+    english_output = ""
     for line in input_text.splitlines():
-        if not include_comments.get() and line.lstrip().startswith("#"):
-            continue
         translation = translate_line(line, translated_language, current_keywords)
-        output += translation + "\n"
+        # Append the translated line as a comment
+        translated_output += "# " + translation + "\n"
+        # Append the original line
+        english_output += line + "\n"
 
+    # Combine the translated comments with the English code
+    output = translated_output + english_output
     outputTextBox.insert("1.0", output)
     translated_code = output  # Save the translated code to the global variable
-    # to be used later for export purposes
 
 
 def comboclick(event):
@@ -88,10 +91,10 @@ def copy_output_to_clipboard():
 translated_code = "..."  # the translated code
 
 
-# Then in your saveFile function...
 def saveFile():
     global translated_code
     fileType = fileTypeVar.get()
+
 
     with open("translated_code" + fileType, "w", encoding="utf-8") as file:
         if fileType == ".rtf":
@@ -129,10 +132,13 @@ def openSettings():
 
 
 def detect_language_and_update():
-    input_text = inputTextBox.get("1.0", tk.END)
-    human_language = detect(input_text)
-    detected_language_var.set(f"{human_language} Python")
+    input_text = inputTextBox.get("1.0", tk.END).strip()
 
+    try:
+        human_language = detect(input_text)
+        detected_language_var.set(f"{human_language} Python")
+    except LangDetectException:
+        detected_language_var.set("Meow?!")
 
 def debounce(wait):
     def decorator(fn):
@@ -153,7 +159,6 @@ def debounce(wait):
 def on_key_release(event):
     detect_language_and_update()
 
-
 titleFrame = Frame(window, bg="lightgray")
 titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
 titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),
@@ -171,11 +176,11 @@ inputFrame.place(relx=0.1, rely=0.2, relwidth=0.4, relheight=0.5)  # , padx=10, 
 inputHeaderFrame = Frame(inputFrame, width=400, height=50)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=0.9, relheight=0.1)
 
-# Create a variable to hold the detected language
+
 detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
 
-# Create a label using the variable
+
 detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var,
                                     font=("Bahnschrift Light", 15))
 detected_language_label.place(relx=0, rely=0)  # Adjust the placement as needed
@@ -216,17 +221,17 @@ translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light",
 translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
 
 fileTypeVar = tk.StringVar()
-fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".txt", ".rtf")
-fileTypeOptionMenu.place(relx=0.63, rely=0.75)  # Adjust the coordinates and dimensions as needed
+fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".py", ".txt", ".rtf")
+fileTypeOptionMenu.place(relx=0.63, rely=0.75)
 
 saveButton = tk.Button(window, text="Save", command=saveFile)
-saveButton.place(relx=0.63, rely=0.8)  # Adjust the coordinates and dimensions as needed
+saveButton.place(relx=0.63, rely=0.8)
 
 # Create the "Settings" button
 settingsButton = tk.Button(window, text="Settings",
-                           command=openSettings)  # Replace openSettings with the function you want to call when the button is clicked
+                           command=openSettings)
 settingsButton.place(relx=0.8, rely=0.9, relwidth=0.15,
-                     relheight=0.05)  # Adjust the coordinates and dimensions as needed
+                     relheight=0.05)
 ...
 
 window.mainloop()
