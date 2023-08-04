@@ -49,13 +49,19 @@ def translateClick():
     input_text = inputTextBox.get("1.0", tk.END)
     output = ""
     for line in input_text.splitlines():
-        if not include_comments.get() and line.lstrip().startswith("#"):
-            continue
-        translation = translate_line(line, translated_language, current_keywords)
-        output += translation + "\n"
+        translation_data = translate_line(line, translated_language, current_keywords, include_comments=include_comments.get())
+        translated_string = ""
 
-    outputTextBox.insert("1.0", output)
-    translated_code = output  # Save the translated code to the global variable
+        for nested_list in translation_data:
+            for word in nested_list:
+                translated_string = translated_string + word[0]
+        outputTextBox.insert("1.0", translated_string + "\n")
+
+        for nested_list in translation_data:
+            for word in nested_list:
+                if word[0] != ' ':
+                    outputTextBox.tag_add(word[0], ("1." + str(word[2] - 1)), ("1." + str(word[3] - 1)))
+                    outputTextBox.tag_config(word[0], foreground=color_codes[word[1]])
 
     # to be used later for export purposes
 
