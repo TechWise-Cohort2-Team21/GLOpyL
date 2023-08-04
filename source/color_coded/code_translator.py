@@ -22,7 +22,7 @@ def translate_word(word, lang, current_keywords):
     
     if word in dictionary:
         translated_word = [dictionary[word][0], dictionary[word][1], (length_incrementer + 1), (length_incrementer + 1 + len(dictionary[word][0]))]
-        length_incrementer += 1 + len(dictionary[word][0])
+        length_incrementer += len(dictionary[word][0])
     else:
         words = word.split("_")
 #        if word == ' ':
@@ -37,7 +37,7 @@ def translate_word(word, lang, current_keywords):
                             6,
                             (length_incrementer + 1),
                             (length_incrementer + 1 + len(translator.translate(" ".join(words), dest=lang).text.replace(" ", "_")))]
-        length_incrementer += 1 + len(translator.translate(" ".join(words), dest=lang).text.replace(" ", "_"))
+        length_incrementer += len(translator.translate(" ".join(words), dest=lang).text.replace(" ", "_"))
 
 
     return translated_word
@@ -89,3 +89,4 @@ def translate_line(line: str, lang: str, current_keywords, include_comments: boo
     
 
     return translated_line
+    
