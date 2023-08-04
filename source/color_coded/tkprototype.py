@@ -37,6 +37,14 @@ def translateClick():
     global includeComments
     global translated_code  # This allows us to modify the global variable
 
+    color_codes = {0: "white",
+                    1:"dodger blue",
+                    2: "violet red",
+                    3: "blue",
+                    4: "gold",
+                    5: "spring green",
+                    6: "red"}
+
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
     output = ""
