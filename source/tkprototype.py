@@ -86,12 +86,18 @@ translated_code = "..."  # the translated code
 
 # Then in your saveFile function...
 def saveFile():
-    global translated_code  # This allows us to access the global variable
-    # Get the selected file type
+    global translated_code
     fileType = fileTypeVar.get()
-    # Save the translated code as a file of the selected type
+
     with open("translated_code" + fileType, "w", encoding="utf-8") as file:
-        file.write(translated_code)
+        if fileType == ".rtf":
+            # Write RTF header and content
+            file.write("{\\rtf1\\ansi\\deff0\n")
+            file.write(translated_code.replace("\n", "\\par\n"))
+            file.write("}")
+        else:
+            file.write(translated_code)
+
 
 
 include_comments = tk.BooleanVar()
@@ -178,8 +184,9 @@ translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light",
 translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
 
 fileTypeVar = tk.StringVar()
-fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar,".txt")
-fileTypeOptionMenu.place(relx=0.63, rely=0.75)
+fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar,".txt", ".rtf")
+fileTypeOptionMenu.place(relx=0.63, rely=0.75)  # Adjust the coordinates and dimensions as needed
+
 
 saveButton = tk.Button(window, text="Save", command=saveFile)
 saveButton.place(relx=0.63, rely=0.8)  # Adjust the coordinates and dimensions as needed
