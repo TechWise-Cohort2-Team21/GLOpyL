@@ -43,10 +43,6 @@ def translate_word(word: str, lang: str, current_keywords) -> str:
 def translate_line(line: str, lang: str, current_keywords, include_comments: bool = True) -> str:
     if not include_comments and line.lstrip().startswith("#"):
         return line
-    ...
-
-    ...
-
 
     words = []
     current_word = ""

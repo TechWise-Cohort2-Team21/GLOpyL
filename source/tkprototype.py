@@ -58,11 +58,6 @@ def translateClick():
     translated_code = output  # Save the translated code to the global variable
     # to be used later for export purposes
 
-
-# def save_to_rtf(output):
-#     with codecs.open("output.rtf", "w", "utf-8") as output_file:
-#         output_file.write(output)
-
 def comboclick(event):
     global current_keywords
     global translated_language
@@ -184,7 +179,7 @@ translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
 
 fileTypeVar = tk.StringVar()
 fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar,".txt")
-fileTypeOptionMenu.place(relx=0.63, rely=0.75)  # Adjust the coordinates and dimensions as needed
+fileTypeOptionMenu.place(relx=0.63, rely=0.75)
 
 saveButton = tk.Button(window, text="Save", command=saveFile)
 saveButton.place(relx=0.63, rely=0.8)  # Adjust the coordinates and dimensions as needed
@@ -195,9 +190,5 @@ settingsButton = tk.Button(window, text="Settings",
 settingsButton.place(relx=0.8, rely=0.9, relwidth=0.15,
                      relheight=0.05)  # Adjust the coordinates and dimensions as needed
 ...
-
-# to be included later as an optional setting
-# commentsCheckbox = tk.Checkbutton(window, text="Include Comments", variable=include_comments, font=("Arial", 14))
-# commentsCheckbox.grid(column=0, row=5, sticky="w") #, padx=10, pady=10
 
 window.mainloop()
