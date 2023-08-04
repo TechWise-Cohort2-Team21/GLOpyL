@@ -7,6 +7,7 @@ import codecs
 import pyperclip
 from tkinter import messagebox
 from langdetect import detect, detect_langs
+import threading
 
 # Global variables
 translatedCodeText = None
@@ -32,9 +33,11 @@ window.maxsize(screen_width, screen_height)
 include_comments = tk.BooleanVar()
 include_comments.set(True)  # Set to True by default
 
+
 def extract_comments(code):
     comments = [line for line in code.splitlines() if line.strip().startswith("#")]
     return " ".join(comments)
+
 
 # Translates the input box, places in output box
 def translateClick():
@@ -57,6 +60,7 @@ def translateClick():
     outputTextBox.insert("1.0", output)
     translated_code = output  # Save the translated code to the global variable
     # to be used later for export purposes
+
 
 def comboclick(event):
     global current_keywords
@@ -99,7 +103,6 @@ def saveFile():
             file.write(translated_code)
 
 
-
 include_comments = tk.BooleanVar()
 include_comments.set(True)
 
@@ -125,6 +128,32 @@ def openSettings():
                             f"+{main_window_y + main_window_height // 2 - settingsWindow_height // 2}")
 
 
+def detect_language_and_update():
+    input_text = inputTextBox.get("1.0", tk.END)
+    human_language = detect(input_text)
+    detected_language_var.set(f"{human_language} Python")
+
+
+def debounce(wait):
+    def decorator(fn):
+        def debounced(*args, **kwargs):
+            nonlocal timer
+            timer.cancel()
+            timer = threading.Timer(wait, lambda: fn(*args, **kwargs))
+            timer.start()
+
+        timer = threading.Timer(wait, lambda: None)
+        timer.start()
+        return debounced
+
+    return decorator
+
+
+@debounce(0.5)  # Delay of 0.5 seconds
+def on_key_release(event):
+    detect_language_and_update()
+
+
 titleFrame = Frame(window, bg="lightgray")
 titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
 titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),
@@ -147,7 +176,8 @@ detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
 
 # Create a label using the variable
-detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var, font=("Bahnschrift Light", 15))
+detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var,
+                                    font=("Bahnschrift Light", 15))
 detected_language_label.place(relx=0, rely=0)  # Adjust the placement as needed
 
 # inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Bahnschrift Light", 15))
@@ -159,6 +189,8 @@ copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)  # , padx=1
 
 inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
 inputTextBox.place(relx=0, rely=0.1, relwidth=0.9, relheight=0.9)
+
+inputTextBox.bind("<KeyRelease>", on_key_release)
 
 outputFrame = Frame(window, width=400, height=400)
 outputFrame.place(relx=0.5, rely=0.2, relwidth=0.4, relheight=0.5)
@@ -184,9 +216,8 @@ translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light",
 translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
 
 fileTypeVar = tk.StringVar()
-fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar,".txt", ".rtf")
+fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".txt", ".rtf")
 fileTypeOptionMenu.place(relx=0.63, rely=0.75)  # Adjust the coordinates and dimensions as needed
-
 
 saveButton = tk.Button(window, text="Save", command=saveFile)
 saveButton.place(relx=0.63, rely=0.8)  # Adjust the coordinates and dimensions as needed
