@@ -68,12 +68,19 @@ def translateClick():
 def comboclick(event):
     global current_keywords
     global translated_language
-    if language_selection.get() == "Spanish Python":
+    selected_language = language_selection.get()
+
+    if selected_language == "Spanish Python":
         translated_language = "es"
         current_keywords = keywords.es
-    elif language_selection.get() == "French Python":
+    elif selected_language == "French Python":
         translated_language = "fr"
         current_keywords = keywords.fr
+    else:
+        # Handle unsupported language selection
+        tk.messagebox.showwarning("Unsupported Language", f"The selected language '{selected_language}' is not supported.")
+        # Optionally, reset the selection to a default value
+        language_selection.set("Select Language")
 
 
 def copy_input_to_clipboard():
