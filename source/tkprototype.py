@@ -77,15 +77,23 @@ def comboclick(event):
 
 
 def copy_input_to_clipboard():
-    original_code = inputTextBox.get("1.0", tk.END)
-    pyperclip.copy(original_code)
-    tk.messagebox.showinfo("Copy to Clipboard", "Original code has been copied to the clipboard.")
+    try:
+        original_code = inputTextBox.get("1.0", tk.END)
+        pyperclip.copy(original_code)
+        tk.messagebox.showinfo("Copy to Clipboard", "Original code has been copied to the clipboard.")
+    except Exception as e:
+        tk.messagebox.showerror("Error", f"Failed to copy original code to the clipboard. Error: {str(e)}")
+
 
 
 def copy_output_to_clipboard():
-    translated_code = outputTextBox.get("1.0", tk.END)
-    pyperclip.copy(translated_code)
-    tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
+    try:
+        translated_code = outputTextBox.get("1.0", tk.END)
+        pyperclip.copy(translated_code)
+        tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
+    except Exception as e:
+        tk.messagebox.showerror("Error", f"Failed to copy translated code to the clipboard. Error: {str(e)}")
+
 
 
 translated_code = "..."  # the translated code
