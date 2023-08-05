@@ -21,7 +21,7 @@ supported_languages = [
     "French Python"
 ]
 
-# Creates the window
+
 window = tk.Tk()
 window.title("GLOpyL")
 screen_width = window.winfo_screenwidth()
@@ -32,7 +32,7 @@ window.maxsize(screen_width, screen_height)
 
 
 include_comments = tk.BooleanVar()
-include_comments.set(True)  # Set to True by default
+include_comments.set(True)
 
 
 def extract_comments(code):
@@ -47,22 +47,30 @@ def translateClick():
     input_text = inputTextBox.get("1.0", tk.END)
 
 
-    human_language = detect(input_text)
-    detected_language_var.set(f"{human_language} Python")
+    if not input_text.strip():
+        tk.messagebox.showwarning("Empty Input", "Please enter code to translate.")
+        return
 
-    translated_output = ""
-    english_output = ""
-    for line in input_text.splitlines():
-        translation = translate_line(line, translated_language, current_keywords)
-        # Append the translated line as a comment
-        translated_output += "# " + translation + "\n"
-        # Append the original line
-        english_output += line + "\n"
+    try:
+        human_language = detect(input_text)
+        detected_language_var.set(f"{human_language} Python")
 
-    # Combine the translated comments with the English code
-    output = translated_output + english_output
-    outputTextBox.insert("1.0", output)
-    translated_code = output  # Save the translated code to the global variable
+        translated_output = ""
+        english_output = ""
+        for line in input_text.splitlines():
+            translation = translate_line(line, translated_language, current_keywords)
+
+            translated_output += "# " + translation + "\\n"
+
+            english_output += line + "\\n"
+
+
+        output = translated_output + english_output
+        outputTextBox.insert("1.0", output)
+        translated_code = output
+
+    except Exception as e:
+        tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
 
 
 def comboclick(event):
@@ -103,7 +111,7 @@ def copy_output_to_clipboard():
 
 
 
-translated_code = "..."  # the translated code
+translated_code = "..."
 
 
 def saveFile():
