@@ -10,6 +10,7 @@ from langdetect import detect, detect_langs
 import threading
 from langdetect.lang_detect_exception import LangDetectException
 
+
 # Global variables
 translatedCodeText = None
 translated_language = "es"
@@ -20,6 +21,7 @@ supported_languages = [
     "French Python"
 ]
 
+
 window = tk.Tk()
 window.title("GLOpyL")
 screen_width = window.winfo_screenwidth()
@@ -27,6 +29,7 @@ screen_height = window.winfo_screenheight()
 window.geometry(f'{screen_width}x{screen_height}')
 window.minsize(900, 500)
 window.maxsize(screen_width, screen_height)
+
 
 include_comments = tk.BooleanVar()
 include_comments.set(True)
@@ -56,9 +59,9 @@ def translateClick():
         for line in input_text.splitlines():
             translation = translate_line(line, translated_language, current_keywords)
 
-            translated_output += "# " + translation + "\\n"
+            translated_output += "# " + translation + "\n"  # Corrected newline handling
 
-            english_output += line + "\\n"
+            english_output += line + "\n"  # Corrected newline handling
 
         output = translated_output + english_output
         outputTextBox.insert("1.0", output)
@@ -66,6 +69,7 @@ def translateClick():
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
+
 
 
 def comboclick(event):
@@ -95,6 +99,7 @@ def copy_input_to_clipboard():
         tk.messagebox.showerror("Error", f"Failed to copy original code to the clipboard. Error: {str(e)}")
 
 
+
 def copy_output_to_clipboard():
     try:
         translated_code = outputTextBox.get("1.0", tk.END)
@@ -102,6 +107,7 @@ def copy_output_to_clipboard():
         tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to copy translated code to the clipboard. Error: {str(e)}")
+
 
 
 translated_code = "..."
@@ -159,7 +165,6 @@ def detect_language_and_update():
     except LangDetectException:
         detected_language_var.set("Meow?!")
 
-
 def debounce(wait):
     def decorator(fn):
         def debounced(*args, **kwargs):
@@ -179,7 +184,6 @@ def debounce(wait):
 def on_key_release(event):
     detect_language_and_update()
 
-
 titleFrame = Frame(window, bg="lightgray")
 titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
 titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),
@@ -197,8 +201,10 @@ inputFrame.place(relx=0.1, rely=0.2, relwidth=0.4, relheight=0.5)  # , padx=10, 
 inputHeaderFrame = Frame(inputFrame, width=400, height=50)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=0.9, relheight=0.1)
 
+
 detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
+
 
 detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var,
                                     font=("Bahnschrift Light", 15))
