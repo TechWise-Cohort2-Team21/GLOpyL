@@ -110,15 +110,18 @@ def saveFile():
     global translated_code
     fileType = fileTypeVar.get()
 
-
-    with open("translated_code" + fileType, "w", encoding="utf-8") as file:
-        if fileType == ".rtf":
-            # Write RTF header and content
-            file.write("{\\rtf1\\ansi\\deff0\n")
-            file.write(translated_code.replace("\n", "\\par\n"))
-            file.write("}")
-        else:
-            file.write(translated_code)
+    try:
+        with open("translated_code" + fileType, "w", encoding="utf-8") as file:
+            if fileType == ".rtf":
+                # Write RTF header and content
+                file.write("{\\\\rtf1\\\\ansi\\\\deff0\\n")
+                file.write(translated_code.replace("\\n", "\\\\par\\n"))
+                file.write("}")
+            else:
+                file.write(translated_code)
+        tk.messagebox.showinfo("File Saved", "Translated code has been saved successfully.")
+    except Exception as e:
+        tk.messagebox.showerror("Error", f"Failed to save translated code to the file. Error: {str(e)}")
 
 
 include_comments = tk.BooleanVar()
