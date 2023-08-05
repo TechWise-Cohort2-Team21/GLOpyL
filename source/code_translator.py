@@ -28,11 +28,18 @@ def translate_word(word: str, lang: str, current_keywords) -> str:
     else:
         dictionary = current_keywords
 
+    translated_word = None
     if word in dictionary:
         translated_word = dictionary[word]
     else:
         words = word.split("_")
-        translated_word = translator.translate(" ".join(words), dest=lang).text.replace(" ", "_")
+        try:
+            translated_word = translator.translate(" ".join(words), dest=lang).text.replace(" ", "_")
+        except Exception as e:
+            # Log or print the exception for debugging purposes
+            print(f"Error translating word '{word}': {str(e)}")
+            # Return the original word if translation fails
+            translated_word = word
 
     # Save the translation in the translation memory
     translation_memory[lang][word] = translated_word
