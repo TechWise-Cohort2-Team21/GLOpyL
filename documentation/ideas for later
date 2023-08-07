@@ -1,0 +1,12 @@
+Drag and Drop: Allow users to drag and drop .py files into the application to load Python scripts directly.
+
+User Feedback Loop: Provide a way for users to give feedback on translations and use this feedback to improve future translations. For instance, if a user identifies an incorrect translation, they can suggest the correct one. This feedback can be used to update the translation memory and improve the translation model.
+
+Glossary of Terms: In addition to the translation memory,  allow users to define a glossary of terms for their project. This would be a list of words with their preferred translations. When these words appear in the code, the system would use the user-defined translation instead of the one from the translator.
+
+support for multiple translators
+
+Save to Original File Location: Rather than saving to the application's directory by default, you could allow the user to choose where they want to save the translated file
+
+Better Handling of Code-specific Terms: Some terms, such as variable names or specific library functions, may not translate well. You could improve your tool to recognize these terms and leave them untranslated.
+
