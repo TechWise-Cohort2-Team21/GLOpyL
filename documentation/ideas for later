@@ -9,4 +9,4 @@ support for multiple translators
 Save to Original File Location: Rather than saving to the application's directory by default, you could allow the user to choose where they want to save the translated file
 
 Better Handling of Code-specific Terms: Some terms, such as variable names or specific library functions, may not translate well. You could improve your tool to recognize these terms and leave them untranslated.
-
+...
