@@ -34,6 +34,9 @@ window.maxsize(screen_width, screen_height)
 include_comments = tk.BooleanVar()
 include_comments.set(True)
 
+preserve_keywords = tk.BooleanVar()
+preserve_keywords.set(False)
+
 
 def extract_comments(code):
     comments = [line for line in code.splitlines() if line.strip().startswith("#")]
@@ -42,6 +45,8 @@ def extract_comments(code):
 
 def translateClick():
     global translated_code
+    global include_comments
+    global preserve_keywords
 
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
@@ -57,7 +62,7 @@ def translateClick():
         translated_output = ""
         english_output = ""
         for line in input_text.splitlines():
-            translation = translate_line(line, translated_language, current_keywords)
+            translation = translate_line(line, translated_language, current_keywords, include_comments, preserve_keywords)
 
             translated_output += "# " + translation + "\n"  # Corrected newline handling
 
@@ -137,6 +142,7 @@ include_comments.set(True)
 
 def openSettings():
     global include_comments
+    global preserve_keywords
 
     settingsWindow = tk.Toplevel(window)
     settingsWindow.title("Settings")
@@ -144,6 +150,9 @@ def openSettings():
     # Update the include_comments variable based on the user's selection
     include_comments_checkbox = tk.Checkbutton(settingsWindow, text="Include Comments", variable=include_comments)
     include_comments_checkbox.pack()
+    
+    include_comments_checkbox = tk.Checkbutton(settingsWindow, text="Preserve Keywords", variable=preserve_keywords)
+    include_comments_checkbox.pack()    
 
     settingsWindow_width = 200
     settingsWindow_height = 200
