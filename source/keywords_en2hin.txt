@@ -1,52 +1,52 @@
-and 
-as 
-async 
-assert 
-await
-break
-class 
-continue 
-def 
-del 
-elif 
-else 
-except 
-exec 
-finally 
-for
-from 
-global 
-if 
-import 
-in 
-is 
-lambda
-nonlocal 
-not
-or 
-pass 
-print 
-raise 
-return 
-try 
-while 
-with 
-yield  
-True 
-False 
-None 
-str 
-int 
-float 
-complex 
-list 
-tuple
-range 
-dict 
-set 
-frozenset 
-bool 
-bytes 
-bytearray
-memoryview
-NoneType 
+and: और 
+as: जैसा 
+async: अतुल्यकालिक 
+assert: ज़ोर 
+await: इंतजार 
+break: तोड़ना 
+class: श्रेणी
+continue: बनाए रखना
+def: परिभाषित करना
+del: हटाना
+elif: अन्यथा यदि
+else: अन्यथा
+except: के अलावा
+exec: तामील करना
+finally: आखिरकार
+for: के लिए
+from: से
+global: वैश्विक 
+if: अगर
+import: आयात करना
+in: अंदर 
+is: है
+lambda: लैम्ब्डा
+nonlocal: गैर स्थानीय 
+not: नहीं
+or: या
+pass: उत्तीर्ण 
+print: प्रिंट
+raise: बढ़ाना
+return: लौटाना
+try: प्रयास करना 
+while: जब
+with: साथ 
+yield: मान लेना  
+True: सत्य 
+False: ग़लत 
+None: लेश मात्र नहीं
+str: डोरी
+int: पूर्णांक
+float: वायु पर तैरना
+complex: जटिल
+list: सूचीबद्ध करना
+tuple: टपल
+range: पंक्ति से रखना 
+dict: शब्दकोष
+set: लगाना
+frozenset: जमे हुए सेट
+bool: बूलियन
+bytes: बाइट्स 
+bytearray: बाइट सरणी
+memoryview: स्मृति दर्शन
+NoneType: कोई भी प्रकार नहीं 
