@@ -12,7 +12,7 @@ translator = Translator()
 translation_memory = {}
 
 
-def translate_word(word: str, lang: str, current_keywords) -> str:
+def translate_word(word: str, lang: str, current_keywords, preserve_keywords:bool = False) -> str:
     # Check if the translation memory for this language exists
     if lang not in translation_memory:
         translation_memory[lang] = {}
@@ -30,7 +30,9 @@ def translate_word(word: str, lang: str, current_keywords) -> str:
 
     translated_word = None
     if word in dictionary:
-        translated_word = dictionary[word]
+        if preserve_keywords:
+            return word
+        return dictionary[word]
     else:
         words = word.split("_")
         try:
@@ -47,7 +49,7 @@ def translate_word(word: str, lang: str, current_keywords) -> str:
     return translated_word
 
 
-def translate_line(line: str, lang: str, current_keywords, include_comments: bool = True) -> str:
+def translate_line(line: str, lang: str, current_keywords, include_comments: bool = True, preserve_keywords: bool = False) -> str:
     if not include_comments and line.lstrip().startswith("#"):
         return line
 
@@ -60,11 +62,11 @@ def translate_line(line: str, lang: str, current_keywords, include_comments: boo
         elif current_word == "":
             words.append(char)
         else:
-            words.append(translate_word(current_word, lang, current_keywords))
+            words.append(translate_word(current_word, lang, current_keywords, preserve_keywords))
             current_word = ""
             words.append(char)
 
-    words.append(translate_word(current_word, lang, current_keywords))
+    words.append(translate_word(current_word, lang, current_keywords, preserve_keywords))
     translated_line = "".join(words)
     return translated_line
 
