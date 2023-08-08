@@ -38,9 +38,9 @@ preserve_keywords = tk.BooleanVar()
 preserve_keywords.set(False)
 
 
-def extract_comments(code):
-    comments = [line for line in code.splitlines() if line.strip().startswith("#")]
-    return " ".join(comments)
+# def extract_comments(code):
+#     comments = [line for line in code.splitlines() if line.strip().startswith("#")]
+#     return " ".join(comments)
 
 
 def translateClick():
@@ -59,18 +59,14 @@ def translateClick():
         human_language = detect(input_text)
         detected_language_var.set(f"{human_language} Python")
 
-        translated_output = ""
+        translated_code = ""
         english_output = ""
+
         for line in input_text.splitlines():
-            translation = translate_line(line, translated_language, current_keywords, include_comments, preserve_keywords)
+            translation = translate_line(line, translated_language, current_keywords, include_comments, preserve_keywords.get())
+            translated_code += translation + "\n"
 
-            translated_output += "# " + translation + "\n"  # Corrected newline handling
-
-            english_output += line + "\n"  # Corrected newline handling
-
-        output = translated_output + english_output
-        outputTextBox.insert("1.0", output)
-        translated_code = output
+        outputTextBox.insert("1.0", translated_code)
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
@@ -89,9 +85,7 @@ def comboclick(event):
         translated_language = "fr"
         current_keywords = keywords.fr
     else:
-
-        tk.messagebox.showwarning("Unsupported Language", f"The selected language '{selected_language}' is not "
-                                                          f"supported.")
+        tk.messagebox.showwarning("Unsupported Language", f"The selected language '{selected_language}' is not supported.")
         language_selection.set("Select Language")
 
 
@@ -115,7 +109,7 @@ def copy_output_to_clipboard():
 
 
 
-translated_code = "..."
+translated_code = ""
 
 
 def saveFile():
@@ -129,6 +123,13 @@ def saveFile():
                 file.write("{\\\\rtf1\\\\ansi\\\\deff0\\n")
                 file.write(translated_code.replace("\\n", "\\\\par\\n"))
                 file.write("}")
+            elif fileType == ".py":
+                lines = translated_code.split("\n")
+                for line in lines:
+                    file.write(f"# {line}\n")
+                input_text = inputTextBox.get("1.0", tk.END)
+                file.write("\n\n\n")
+                file.write(input_text)
             else:
                 file.write(translated_code)
         tk.messagebox.showinfo("File Saved", "Translated code has been saved successfully.")
@@ -172,7 +173,7 @@ def detect_language_and_update():
         human_language = detect(input_text)
         detected_language_var.set(f"{human_language} Python")
     except LangDetectException:
-        detected_language_var.set("Meow?!")
+        detected_language_var.set("Error Detecting Language")
 
 def debounce(wait):
     def decorator(fn):
@@ -250,8 +251,7 @@ copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
 outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
 outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
 
-translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translateClick,
-                            bg="lightgray")
+translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translateClick, bg="lightgray")
 translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
 
 fileTypeVar = tk.StringVar()
