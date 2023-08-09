@@ -107,3 +107,6 @@ fr = {
     'memoryview': 'vuedelamémoire', 
     'NoneType': 'AucunType'
     }
+
+zh = {}
+hi = {}
