@@ -63,7 +63,7 @@ def translateClick():
         english_output = ""
 
         for line in input_text.splitlines():
-            translation = translate_line(line, translated_language, current_keywords, include_comments, preserve_keywords.get())
+            translation = translate_line(line, translated_language, current_keywords, include_comments.get(), preserve_keywords.get())
             translated_code += translation + "\n"
 
         outputTextBox.insert("1.0", translated_code)
