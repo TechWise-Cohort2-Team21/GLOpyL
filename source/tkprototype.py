@@ -66,6 +66,10 @@ def comboclick(event):
         translated_language = "es"
     elif selected_language == "French Python":
         translated_language = "fr"
+    elif selected_language == "Chinese Python":
+        translated_language = "zh"
+    elif selected_language == "Hindi Python":
+        translated_language = "hi"
     else:
         tk.messagebox.showwarning("Unsupported Language", f"The selected language '{selected_language}' is not supported.")
         language_selection.set("Select Language")
