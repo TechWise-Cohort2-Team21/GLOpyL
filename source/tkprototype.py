@@ -128,7 +128,6 @@ def openSettings():
     settingsWindow_height = 200
     settingsWindow.geometry(f"{settingsWindow_width}x{settingsWindow_height}")
 
-
 def detect_language_and_update():
     input_text = inputTextBox.get("1.0", tk.END).strip()
 
@@ -159,10 +158,9 @@ def debounce(wait):
 def on_key_release(event):
     detect_language_and_update()
 
-titleFrame = Frame(window, bg="lightgray")
+titleFrame = Frame(window, bg="grey80")
 titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
-titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),
-                       background="lightgray")  # height=20, width=50,
+titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),background="grey80")  # height=20, width=50,
 titleLabel.place(relx=0.1, rely=0.2)
 
 # descLabel = ttk.Label(titleFrame, text="subverting English's monopoly on code.", font=("Arial", 18), background="lightgray")
