@@ -89,4 +89,9 @@ def translate_line(line: str, lang: str, current_keywords, include_comments: boo
     
 
     return translated_line
-    
+
+length_incrementer = 0
+
+
+print(translate_line("apple and pear and orange", "es", "es"))
+
