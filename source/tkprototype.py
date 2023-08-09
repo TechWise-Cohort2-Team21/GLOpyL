@@ -3,24 +3,20 @@ from tkinter import ttk
 from tkinter import Frame
 import keywords
 from code_translator import translate_line
-import codecs
+# import codecs
 import pyperclip
 from tkinter import messagebox
-from langdetect import detect, detect_langs
+from langdetect import detect#, detect_langs
 import threading
 from langdetect.lang_detect_exception import LangDetectException
 
-
-# Global variables
 translatedCodeText = None
 translated_language = "es"
 programming_language = "python"
-current_keywords = keywords.es
 supported_languages = [
     "Spanish Python",
     "French Python"
 ]
-
 
 window = tk.Tk()
 window.title("GLOpyL")
@@ -30,18 +26,15 @@ window.geometry(f'{screen_width}x{screen_height}')
 window.minsize(900, 500)
 window.maxsize(screen_width, screen_height)
 
-
 include_comments = tk.BooleanVar()
 include_comments.set(True)
 
 preserve_keywords = tk.BooleanVar()
 preserve_keywords.set(False)
 
-
 # def extract_comments(code):
 #     comments = [line for line in code.splitlines() if line.strip().startswith("#")]
 #     return " ".join(comments)
-
 
 def translateClick():
     global translated_code
@@ -63,7 +56,7 @@ def translateClick():
         english_output = ""
 
         for line in input_text.splitlines():
-            translation = translate_line(line, translated_language, current_keywords, include_comments.get(), preserve_keywords.get())
+            translation = translate_line(line, translated_language, include_comments.get(), preserve_keywords.get())
             translated_code += translation + "\n"
 
         outputTextBox.insert("1.0", translated_code)
@@ -74,16 +67,13 @@ def translateClick():
 
 
 def comboclick(event):
-    global current_keywords
     global translated_language
     selected_language = language_selection.get()
 
     if selected_language == "Spanish Python":
         translated_language = "es"
-        current_keywords = keywords.es
     elif selected_language == "French Python":
         translated_language = "fr"
-        current_keywords = keywords.fr
     else:
         tk.messagebox.showwarning("Unsupported Language", f"The selected language '{selected_language}' is not supported.")
         language_selection.set("Select Language")
