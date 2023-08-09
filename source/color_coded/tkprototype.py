@@ -48,15 +48,24 @@ def translateClick():
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
     output = ""
+    translation_data_lines = []
+
     for line in input_text.splitlines():
         translation_data = translate_line(line, translated_language, current_keywords, include_comments=include_comments.get())
+        translation_data_lines.append([translation_data])
+    
+    print(translation_data_lines)
+
+    for line in reversed(translation_data_lines):
         translated_string = ""
+        print(line)
 
         for nested_list in translation_data:
             for word in nested_list:
                 translated_string = translated_string + word[0]
-        outputTextBox.insert("1.0", translated_string + "\n")
 
+        outputTextBox.insert("1.0", translated_string)
+        
         for nested_list in translation_data:
             for word in nested_list:
                 if word[0] != ' ':
