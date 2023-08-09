@@ -10,3 +10,4 @@ Save to Original File Location: Rather than saving to the application's director
 
 Better Handling of Code-specific Terms: Some terms, such as variable names or specific library functions, may not translate well. You could improve your tool to recognize these terms and leave them untranslated.
 ...
+a way to get user feed back..?
