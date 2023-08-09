@@ -1,22 +1,21 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import Frame
-import keywords
 from code_translator import translate_line
-# import codecs
 import pyperclip
 from tkinter import messagebox
-from langdetect import detect#, detect_langs
+from langdetect import detect
 import threading
 from langdetect.lang_detect_exception import LangDetectException
 
-translatedCodeText = None
 translated_language = "es"
-programming_language = "python"
 supported_languages = [
     "Spanish Python",
-    "French Python"
+    "French Python", 
+    "Chinese Python",
+    "Hindi Python"
 ]
+translated_code = ""
 
 window = tk.Tk()
 window.title("GLOpyL")
@@ -28,15 +27,16 @@ window.maxsize(screen_width, screen_height)
 
 include_comments = tk.BooleanVar()
 include_comments.set(True)
-
 preserve_keywords = tk.BooleanVar()
 preserve_keywords.set(False)
 
-# def extract_comments(code):
-#     comments = [line for line in code.splitlines() if line.strip().startswith("#")]
-#     return " ".join(comments)
 
-def translateClick():
+
+def lang_abbreviation_to_full(abbr:str):
+    conversion = {"en":"English", "es":"Spanish", "fr":"French", "zh":"Chinese", "hi":"Hindi"}
+    return conversion[abbr] if abbr in conversion else None
+
+def translate():
     global translated_code
     global include_comments
     global preserve_keywords
@@ -44,16 +44,8 @@ def translateClick():
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
 
-    if not input_text.strip():
-        tk.messagebox.showwarning("Empty Input", "Please enter code to translate.")
-        return
-
     try:
-        human_language = detect(input_text)
-        detected_language_var.set(f"{human_language} Python")
-
         translated_code = ""
-        english_output = ""
 
         for line in input_text.splitlines():
             translation = translate_line(line, translated_language, include_comments.get(), preserve_keywords.get())
@@ -87,8 +79,6 @@ def copy_input_to_clipboard():
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to copy original code to the clipboard. Error: {str(e)}")
 
-
-
 def copy_output_to_clipboard():
     try:
         translated_code = outputTextBox.get("1.0", tk.END)
@@ -96,11 +86,6 @@ def copy_output_to_clipboard():
         tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to copy translated code to the clipboard. Error: {str(e)}")
-
-
-
-translated_code = ""
-
 
 def saveFile():
     global translated_code
@@ -126,11 +111,6 @@ def saveFile():
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to save translated code to the file. Error: {str(e)}")
 
-
-include_comments = tk.BooleanVar()
-include_comments.set(True)
-
-
 def openSettings():
     global include_comments
     global preserve_keywords
@@ -138,32 +118,27 @@ def openSettings():
     settingsWindow = tk.Toplevel(window)
     settingsWindow.title("Settings")
 
-    # Update the include_comments variable based on the user's selection
     include_comments_checkbox = tk.Checkbutton(settingsWindow, text="Include Comments", variable=include_comments)
     include_comments_checkbox.pack()
     
-    include_comments_checkbox = tk.Checkbutton(settingsWindow, text="Preserve Keywords", variable=preserve_keywords)
-    include_comments_checkbox.pack()    
+    preserve_keywords_checkbox = tk.Checkbutton(settingsWindow, text="Preserve Keywords", variable=preserve_keywords)
+    preserve_keywords_checkbox.pack()    
 
     settingsWindow_width = 200
     settingsWindow_height = 200
-    main_window_x = window.winfo_x()
-    main_window_y = window.winfo_y()
-    main_window_width = window.winfo_width()
-    main_window_height = window.winfo_height()
-    settingsWindow.geometry(f"{settingsWindow_width}x{settingsWindow_height}"
-                            f"+{main_window_x + main_window_width // 2 - settingsWindow_width // 2}"
-                            f"+{main_window_y + main_window_height // 2 - settingsWindow_height // 2}")
+    settingsWindow.geometry(f"{settingsWindow_width}x{settingsWindow_height}")
 
 
 def detect_language_and_update():
     input_text = inputTextBox.get("1.0", tk.END).strip()
 
     try:
-        human_language = detect(input_text)
+        human_language = lang_abbreviation_to_full(detect(input_text))
         detected_language_var.set(f"{human_language} Python")
     except LangDetectException:
         detected_language_var.set("Error Detecting Language")
+
+    translate()
 
 def debounce(wait):
     def decorator(fn):
@@ -241,8 +216,8 @@ copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
 outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
 outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
 
-translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translateClick, bg="lightgray")
-translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
+# translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translate, bg="lightgray")
+# translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
 
 fileTypeVar = tk.StringVar()
 fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".py", ".txt", ".rtf")
