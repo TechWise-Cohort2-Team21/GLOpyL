@@ -7,11 +7,12 @@ from tkinter import messagebox
 from langdetect import detect
 import threading
 from langdetect.lang_detect_exception import LangDetectException
+from code_translator import translate_line, glossary, glossary_by_language
 
 translated_language = "es"
 supported_languages = [
     "Spanish Python",
-    "French Python", 
+    "French Python",
     "Chinese Python",
     "Hindi Python"
 ]
@@ -31,10 +32,10 @@ preserve_keywords = tk.BooleanVar()
 preserve_keywords.set(False)
 
 
-
-def lang_abbreviation_to_full(abbr:str):
-    conversion = {"en":"English", "es":"Spanish", "fr":"French", "zh":"Chinese", "hi":"Hindi"}
+def lang_abbreviation_to_full(abbr: str):
+    conversion = {"en": "English", "es": "Spanish", "fr": "French", "zh": "Chinese", "hi": "Hindi"}
     return conversion[abbr] if abbr in conversion else None
+
 
 def translate():
     global translated_code
@@ -57,7 +58,6 @@ def translate():
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
 
 
-
 def comboclick(event):
     global translated_language
     selected_language = language_selection.get()
@@ -71,7 +71,8 @@ def comboclick(event):
     elif selected_language == "Hindi Python":
         translated_language = "hi"
     else:
-        tk.messagebox.showwarning("Unsupported Language", f"The selected language '{selected_language}' is not supported.")
+        tk.messagebox.showwarning("Unsupported Language",
+                                  f"The selected language '{selected_language}' is not supported.")
         language_selection.set("Select Language")
 
 
@@ -83,6 +84,7 @@ def copy_input_to_clipboard():
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to copy original code to the clipboard. Error: {str(e)}")
 
+
 def copy_output_to_clipboard():
     try:
         translated_code = outputTextBox.get("1.0", tk.END)
@@ -90,6 +92,7 @@ def copy_output_to_clipboard():
         tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to copy translated code to the clipboard. Error: {str(e)}")
+
 
 def saveFile():
     global translated_code
@@ -115,6 +118,7 @@ def saveFile():
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to save translated code to the file. Error: {str(e)}")
 
+
 def openSettings():
     global include_comments
     global preserve_keywords
@@ -124,13 +128,14 @@ def openSettings():
 
     include_comments_checkbox = tk.Checkbutton(settingsWindow, text="Include Comments", variable=include_comments)
     include_comments_checkbox.pack()
-    
+
     preserve_keywords_checkbox = tk.Checkbutton(settingsWindow, text="Preserve Keywords", variable=preserve_keywords)
-    preserve_keywords_checkbox.pack()    
+    preserve_keywords_checkbox.pack()
 
     settingsWindow_width = 200
     settingsWindow_height = 200
     settingsWindow.geometry(f"{settingsWindow_width}x{settingsWindow_height}")
+
 
 def detect_language_and_update():
     input_text = inputTextBox.get("1.0", tk.END).strip()
@@ -142,6 +147,7 @@ def detect_language_and_update():
         detected_language_var.set("Error Detecting Language")
 
     translate()
+
 
 def debounce(wait):
     def decorator(fn):
@@ -158,13 +164,58 @@ def debounce(wait):
     return decorator
 
 
+def manage_glossary():
+    glossary_window = tk.Toplevel(window)
+    glossary_window.title("Glossary Management")
+
+    # Language selection dropdown
+    selected_language = tk.StringVar()
+    selected_language.set("es")  # Default to Spanish
+    language_dropdown = ttk.Combobox(glossary_window, textvariable=selected_language)
+    language_dropdown['values'] = ("es", "fr", "zh", "hi")
+    language_dropdown.pack()
+
+    def add_term():
+        term = term_entry.get()
+        translation = translation_entry.get()
+        lang = selected_language.get()
+        glossary_by_language[lang][term] = translation
+        update_glossary_list()
+
+    def update_glossary_list(*args):
+        glossary_list.delete(0, tk.END)
+        lang = selected_language.get()
+        for term, translation in glossary_by_language[lang].items():
+            glossary_list.insert(tk.END, f"{term} : {translation}")
+
+    selected_language.trace('w', update_glossary_list)
+    term_label = tk.Label(glossary_window, text="Term:")
+    term_label.pack()
+    term_entry = tk.Entry(glossary_window)
+    term_entry.pack()
+
+    translation_label = tk.Label(glossary_window, text="Translation:")
+    translation_label.pack()
+    translation_entry = tk.Entry(glossary_window)
+    translation_entry.pack()
+
+    add_button = tk.Button(glossary_window, text="Add Term", command=add_term)
+    add_button.pack()
+
+    glossary_list = tk.Listbox(glossary_window)
+    glossary_list.pack()
+    update_glossary_list()
+
+
 @debounce(0.5)  # Delay of 0.5 seconds
 def on_key_release(event):
     detect_language_and_update()
 
+
 titleFrame = Frame(window, bg="grey80")
 titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
-titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),background="grey80")  # height=20, width=50,
+titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),
+                       background="grey80")  # height=20, width=50,
 titleLabel.place(relx=0.1, rely=0.2)
 
 # descLabel = ttk.Label(titleFrame, text="subverting English's monopoly on code.", font=("Arial", 18), background="lightgray")
@@ -178,10 +229,8 @@ inputFrame.place(relx=0.1, rely=0.2, relwidth=0.4, relheight=0.5)  # , padx=10, 
 inputHeaderFrame = Frame(inputFrame, width=400, height=50)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=0.9, relheight=0.1)
 
-
 detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
-
 
 detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var,
                                     font=("Bahnschrift Light", 15))
@@ -227,6 +276,9 @@ fileTypeOptionMenu.place(relx=0.63, rely=0.75)
 
 saveButton = tk.Button(window, text="Save", command=saveFile)
 saveButton.place(relx=0.63, rely=0.8)
+
+glossary_button = tk.Button(window, text="Manage Glossary", command=manage_glossary)
+glossary_button.pack()
 
 settingsButton = tk.Button(window, text="Settings",
                            command=openSettings)

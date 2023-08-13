@@ -3,9 +3,19 @@ import keywords
 
 translator = Translator()
 translation_memory = {}
-
+glossary = {}
+glossary_by_language = {
+    "es": {},  # Spanish
+    "fr": {},  # French
+    "zh": {},  # Chinese
+    "hi": {}   # Hindi
+}
 
 def translate_word(word: str, lang: str, preserve_keywords: bool = False) -> str:
+    if word in glossary_by_language[lang]:
+        return glossary_by_language[lang][word]
+    if word in glossary:
+        return glossary[word]
     if lang not in translation_memory:
         translation_memory[lang] = {}
     if word in translation_memory[lang]:
@@ -26,7 +36,7 @@ def translate_word(word: str, lang: str, preserve_keywords: bool = False) -> str
         if preserve_keywords:
             return word
         return dictionary[word]
-    
+
     translated_word = word
     words = word.split("_")
     try:
@@ -59,6 +69,5 @@ def translate_line(line: str, lang: str, include_comments: bool = True, preserve
     result.append(translate_word(current_word, lang, preserve_keywords))
     translated_line = "".join(result)
     return translated_line
-
 # Example of how to format/dissect output from a translation
 # print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
