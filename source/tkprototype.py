@@ -118,6 +118,27 @@ def saveFile():
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to save translated code to the file. Error: {str(e)}")
 
+# def view_glossary():
+#     view_glossary_window = tk.Toplevel(window)
+#     view_glossary_window.title("View Glossary")
+#
+#     selected_language_view = tk.StringVar()
+#     selected_language_view.set("es")  # Default to Spanish
+#     language_dropdown_view = ttk.Combobox(view_glossary_window, textvariable=selected_language_view)
+#     language_dropdown_view['values'] = ("es", "fr", "zh", "hi")
+#     language_dropdown_view.pack()
+#
+#     glossary_text = tk.Text(view_glossary_window)
+#     glossary_text.pack()
+#
+#     def update_glossary_view(*args):
+#         glossary_text.delete(1.0, tk.END)  # Clear the text widget
+#         lang = selected_language_view.get()
+#         for term, translation in glossary_by_language[lang].items():
+#             glossary_text.insert(tk.END, f"{term} : {translation}\n")
+#
+#     selected_language_view.trace('w', update_glossary_view)
+#     update_glossary_view()  # Initial update
 
 def openSettings():
     global include_comments
@@ -164,6 +185,7 @@ def debounce(wait):
     return decorator
 
 
+
 def manage_glossary():
     glossary_window = tk.Toplevel(window)
     glossary_window.title("Glossary Management")
@@ -188,6 +210,51 @@ def manage_glossary():
         for term, translation in glossary_by_language[lang].items():
             glossary_list.insert(tk.END, f"{term} : {translation}")
 
+    def edit_term(event):
+        selected_term_index = glossary_list.curselection()[0]  # Fixed variable name
+        lang = selected_language.get()
+        selected_term, selected_translation = list(glossary_by_language[lang].items())[selected_term_index]
+
+        edit_window = tk.Toplevel(window)
+        edit_window.title("Edit Term")
+
+        term_entry = tk.Entry(edit_window)
+        term_entry.insert(0, selected_term)
+        term_entry.pack()
+
+        translation_entry = tk.Entry(edit_window)
+        translation_entry.insert(0, selected_translation)
+        translation_entry.pack()
+
+        def save_changes():
+            new_term = term_entry.get()
+            new_translation = translation_entry.get()
+            del glossary_by_language[lang][selected_term]  # Remove old term
+            glossary_by_language[lang][new_term] = new_translation  # Add new term
+            update_glossary_list()
+            edit_window.destroy()
+
+        save_button = tk.Button(edit_window, text="Save", command=save_changes)
+        save_button.pack()
+
+        cancel_button = tk.Button(edit_window, text="Cancel", command=edit_window.destroy)
+        cancel_button.pack()
+
+    def delete_term():
+        selected_term_index = glossary_list.curselection()[0]
+        lang = selected_language.get()
+        selected_term = list(glossary_by_language[lang].keys())[selected_term_index]
+
+        if tk.messagebox.askyesno("Delete Term", f"Are you sure you want to delete '{selected_term}'?"):
+            del glossary_by_language[lang][selected_term]  # Remove the term
+            update_glossary_list()  # Refresh the glossary listw
+
+    glossary_list = tk.Listbox(glossary_window)  # Fixed variable name
+    glossary_list.pack()
+    glossary_list.bind('<Double-Button-1>', edit_term)  # Moved binding after the creation of Listbox
+
+    update_glossary_list()
+
     selected_language.trace('w', update_glossary_list)
     term_label = tk.Label(glossary_window, text="Term:")
     term_label.pack()
@@ -202,7 +269,9 @@ def manage_glossary():
     add_button = tk.Button(glossary_window, text="Add Term", command=add_term)
     add_button.pack()
 
-    glossary_list = tk.Listbox(glossary_window)
+    delete_button = tk.Button(glossary_window, text="Delete Term", command=delete_term)
+    delete_button.pack()
+
     glossary_list.pack()
     update_glossary_list()
 
@@ -279,6 +348,9 @@ saveButton.place(relx=0.63, rely=0.8)
 
 glossary_button = tk.Button(window, text="Manage Glossary", command=manage_glossary)
 glossary_button.pack()
+
+# view_glossary_button = tk.Button(window, text="View Glossary", command=view_glossary)
+# view_glossary_button.pack()
 
 settingsButton = tk.Button(window, text="Settings",
                            command=openSettings)
