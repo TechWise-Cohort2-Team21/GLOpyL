@@ -8,15 +8,24 @@ from langdetect import detect
 import threading
 from langdetect.lang_detect_exception import LangDetectException
 from code_translator import translate_line, glossary, glossary_by_language
+import datetime
+import requests
+import openai
 
 translated_language = "es"
+
 supported_languages = [
     "Spanish Python",
     "French Python",
     "Chinese Python",
     "Hindi Python"
 ]
+
 translated_code = ""
+
+translation_history = []
+
+openai.api_key = ""
 
 window = tk.Tk()
 window.title("GLOpyL")
@@ -37,6 +46,23 @@ def lang_abbreviation_to_full(abbr: str):
     return conversion[abbr] if abbr in conversion else None
 
 
+def get_code_summary(code, summary_language):
+    prompt = f"Please summarize the following code:\n{code}"
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=100
+    )
+
+    summary = response.choices[0].text.strip()
+
+    # Translate the summary into the selected language
+    translated_summary = translate_line(summary, summary_language, include_comments=False, preserve_keywords=False)
+
+    return translated_summary
+
+
 def translate():
     global translated_code
     global include_comments
@@ -51,11 +77,17 @@ def translate():
         for line in input_text.splitlines():
             translation = translate_line(line, translated_language, include_comments.get(), preserve_keywords.get())
             translated_code += translation + "\n"
+            add_to_history(line, translation, translated_language)  # Adding translation to history
 
+        # summary_language = summary_language_var.get()  # Get the selected summary language
+        # code_summary = get_code_summary(translated_code, summary_language)  # Call get_code_summary with summary_language
+        # summary_textbox.delete("1.0", tk.END)
+        # summary_textbox.insert("1.0", code_summary)
         outputTextBox.insert("1.0", translated_code)
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
+
 
 
 def comboclick(event):
@@ -74,6 +106,39 @@ def comboclick(event):
         tk.messagebox.showwarning("Unsupported Language",
                                   f"The selected language '{selected_language}' is not supported.")
         language_selection.set("Select Language")
+
+
+def add_to_history(input_text, translated_text, language):
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    translation_history.append((input_text, translated_text, language, timestamp))
+
+
+from tkinter import ttk
+
+
+def view_history():
+    history_window = tk.Toplevel(window)
+    history_window.title("Translation History")
+    history_window.geometry("800x400")
+
+    history_tree = ttk.Treeview(history_window, columns=("Timestamp", "Language", "Original", "Translated"))
+    history_tree.heading("#1", text="Timestamp")
+    history_tree.heading("#2", text="Language")
+    history_tree.heading("#3", text="Original")
+    history_tree.heading("#4", text="Translated")
+    history_tree.pack(fill=tk.BOTH, expand=1)
+
+    for input_text, translated_text, language, timestamp in translation_history:
+        history_tree.insert("", tk.END, values=(timestamp, language, input_text, translated_text))
+
+    def revert_to_selected():
+        selected_item = history_tree.selection()[0]
+        selected_translation = history_tree.item(selected_item)["values"][3]
+        outputTextBox.delete("1.0", tk.END)
+        outputTextBox.insert("1.0", selected_translation)
+
+    revert_button = tk.Button(history_window, text="Revert to Selected", command=revert_to_selected)
+    revert_button.pack()
 
 
 def copy_input_to_clipboard():
@@ -118,27 +183,28 @@ def saveFile():
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to save translated code to the file. Error: {str(e)}")
 
-# def view_glossary():
-#     view_glossary_window = tk.Toplevel(window)
-#     view_glossary_window.title("View Glossary")
-#
-#     selected_language_view = tk.StringVar()
-#     selected_language_view.set("es")  # Default to Spanish
-#     language_dropdown_view = ttk.Combobox(view_glossary_window, textvariable=selected_language_view)
-#     language_dropdown_view['values'] = ("es", "fr", "zh", "hi")
-#     language_dropdown_view.pack()
-#
-#     glossary_text = tk.Text(view_glossary_window)
-#     glossary_text.pack()
-#
-#     def update_glossary_view(*args):
-#         glossary_text.delete(1.0, tk.END)  # Clear the text widget
-#         lang = selected_language_view.get()
-#         for term, translation in glossary_by_language[lang].items():
-#             glossary_text.insert(tk.END, f"{term} : {translation}\n")
-#
-#     selected_language_view.trace('w', update_glossary_view)
-#     update_glossary_view()  # Initial update
+
+def view_glossary():
+    view_glossary_window = tk.Toplevel(window)
+    view_glossary_window.title("View Glossary")
+
+    selected_language_view = tk.StringVar()
+    selected_language_view.set("es")  # Default to Spanish
+    language_dropdown_view = ttk.Combobox(view_glossary_window, textvariable=selected_language_view)
+    language_dropdown_view['values'] = ("es", "fr", "zh", "hi")
+    language_dropdown_view.pack()
+
+    glossary_text = tk.Text(view_glossary_window)
+    glossary_text.pack()
+
+    def update_glossary_view(*args):
+        glossary_text.delete(1.0, tk.END)  # Clear the text widget
+        lang = selected_language_view.get()
+        for term, translation in glossary_by_language[lang].items():
+            glossary_text.insert(tk.END, f"{term} : {translation}\n")
+
+    selected_language_view.trace('w', update_glossary_view)
+    update_glossary_view()  # Initial update
 
 def openSettings():
     global include_comments
@@ -183,7 +249,6 @@ def debounce(wait):
         return debounced
 
     return decorator
-
 
 
 def manage_glossary():
@@ -349,13 +414,28 @@ saveButton.place(relx=0.63, rely=0.8)
 glossary_button = tk.Button(window, text="Manage Glossary", command=manage_glossary)
 glossary_button.pack()
 
-# view_glossary_button = tk.Button(window, text="View Glossary", command=view_glossary)
-# view_glossary_button.pack()
+view_glossary_button = tk.Button(window, text="View Glossary", command=view_glossary)
+view_glossary_button.pack()
 
 settingsButton = tk.Button(window, text="Settings",
                            command=openSettings)
 settingsButton.place(relx=0.8, rely=0.9, relwidth=0.15,
                      relheight=0.05)
-...
+
+# summary_label = tk.Label(window, text="Code Summary:")
+# summary_label.pack()
+# summary_textbox = tk.Text(window, height=5, wrap=tk.WORD)
+# summary_textbox.pack()
+
+# summary_language_label = tk.Label(window, text="Summary Language:")
+# summary_language_label.pack()
+# summary_language_var = tk.StringVar()
+# summary_language_var.set("en")  # Default to English
+# summary_language_dropdown = ttk.Combobox(window, textvariable=summary_language_var)
+# summary_language_dropdown['values'] = ("en", "es", "fr", "zh", "hi")
+# summary_language_dropdown.pack()
+
+view_history_button = tk.Button(window, text="View History", command=view_history)
+view_history_button.pack()
 
 window.mainloop()
