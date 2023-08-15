@@ -43,7 +43,6 @@ def translate_word(word: str, lang: str, preserve_keywords: bool = False) -> str
         translated_word = translator.translate(" ".join(words), dest=lang).text.replace(" ", "_")
     except Exception as e:
         print(f"Error translating word '{word}': {str(e)}")
-        print(lang)
     translation_memory[lang][word] = translated_word
     return translated_word
 

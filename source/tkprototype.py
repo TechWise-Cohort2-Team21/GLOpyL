@@ -51,8 +51,8 @@ def translate():
         for line in input_text.splitlines():
             translation = translate_line(line, translated_language, include_comments.get(), preserve_keywords.get())
             translated_code += translation + "\n"
-
-        outputTextBox.insert("1.0", translated_code)
+            outputTextBox.delete("1.0", tk.END)
+            outputTextBox.insert("1.0", translated_code)
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
