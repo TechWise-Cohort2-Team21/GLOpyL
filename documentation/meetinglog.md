@@ -46,3 +46,14 @@ Third Presentation: August 2, 2023 7:00 to 9:00 PM EST (Wednesday)
 Meeting 7: August 7, 2023 7:00 to 9:00 PM EST (Monday)
 * discussed future plans and time restrictions
 * made progress on presentation for Wednesday
+
+Fourth Presentation: August 9, 2023 7:00 to 9:00 PM EST (Wednesday)
+
+Meeting 8: August 14, 2023 7:00 to 9:00 PM EST (Monday)
+*
+*
+*
+
+Fifth Presentation: August 16, 2023 7:00 to 9:00 PM EST (Wednesday)
+
+Final Presentation: August 28, 2023 7:50 to 8:05 PM EST (Wednesday)
