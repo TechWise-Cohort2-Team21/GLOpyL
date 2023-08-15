@@ -24,7 +24,7 @@ screen_width = window.winfo_screenwidth()
 screen_height = window.winfo_screenheight()
 window.geometry(f'{screen_width}x{screen_height}')
 window.minsize(900, 500)
-window.maxsize(screen_width, screen_height)
+window.maxsize(window.winfo_screenwidth(), window.winfo_screenheight())
 
 include_comments = tk.BooleanVar()
 include_comments.set(True)
@@ -286,60 +286,73 @@ def on_key_release(event):
     detect_language_and_update()
 
 
-titleFrame = Frame(window, bg="grey80")
-titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
-titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40), background="grey80")  # height=20, width=50,
-titleLabel.place(relx=0.1, rely=0.2)
+sidebar = Frame(window, bg="grey80")
+sidebar.place(relx=0, rely=0, relwidth=0.2, relheight=1)
 
-# descLabel = ttk.Label(titleFrame, text="subverting English's monopoly on code.", font=("Arial", 18), background="lightgray")
-# descLabel.place(relx=0.32, rely=0.55)
+globe = ttk.Label(sidebar, text="🌎", font=("Bahnschrift Light", 130), background="grey80") #height=20, width=50,
+globe.place(relx=0.1, rely=0)
+titleLabel = ttk.Label(sidebar, text="GLOpyL", font=("Bahnschrift Light", 45), background="grey80") #height=20, width=50,
+titleLabel.place(relx=0.09, rely=0.3)
+descLabel = ttk.Label(sidebar, text="subverting English's \nmonopoly on code.", font=("Arial", 16), background="grey80")
+descLabel.place(relx=0.1, rely=0.41)
+glopyl_introduction = tk.Text(sidebar, font=("Bahnschrift Light", 12), wrap="word", border=0, bg="grey80")
+glopyl_introduction.place(relx=0.1, rely=0.5, relwidth=0.8, relheight=0.9)
+glopyl_introduction.insert("1.0", "This program translates Python code into a different world languages. At the moment, it is functional for English to Spanish and English to French. \n\nMore languages coming soon!")
+glopyl_introduction.config(state="disabled")
 
+############
 
-#############
-inputFrame = Frame(window)
-inputFrame.place(relx=0.1, rely=0.2, relwidth=0.4, relheight=0.5)  # , padx=10, pady=5
+functional_frame = Frame(window)
+functional_frame.place(relx=0.2, rely=0, relwidth=0.6, relheight=1)
 
-inputHeaderFrame = Frame(inputFrame, width=400, height=50)
-inputHeaderFrame.place(relx=0, rely=0, relwidth=0.9, relheight=0.1)
+inputFrame = Frame(functional_frame)
+inputFrame.place(relx=0.04, rely=0.1, relwidth=0.44, relheight=0.6) 
 
+inputHeaderFrame = Frame(inputFrame)
+inputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
+
+# is this unnecessary?
+inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Bahnschrift Light", 15))
+inputTextBox_label.place(relx=0, rely=0)
+# end questionable inclusion
+
+# thing possibly replacing unnecessary thing
 detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
-
 detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var, font=("Bahnschrift Light", 15))
 detected_language_label.place(relx=0, rely=0)  # Adjust the placement as needed
+# end replacement
 
-# inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Bahnschrift Light", 15))
-# inputTextBox_label.place(relx=0, rely=0)
+copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_input_to_clipboard, bg="lightgray")
+copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8) #, padx=10, pady=10
 
-copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_input_to_clipboard)
-copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)  # , padx=10, pady=10
-
-inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
-inputTextBox.place(relx=0, rely=0.1, relwidth=0.9, relheight=0.9)
+inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
+inputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
 
 inputTextBox.bind("<KeyRelease>", on_key_release)
 
-outputFrame = Frame(window, width=400, height=400)
-outputFrame.place(relx=0.5, rely=0.2, relwidth=0.4, relheight=0.5)
+outputFrame = Frame(functional_frame)
+outputFrame.place(relx=0.52, rely=0.1, relwidth=0.44, relheight=0.6)
 
-outputHeaderFrame = Frame(outputFrame, width=400, height=50)
-outputHeaderFrame.place(relx=0.1, rely=0, relwidth=0.9, relheight=0.1)
+outputHeaderFrame = Frame(outputFrame)
+outputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
 
-language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15), state="readonly")  # width=15
+language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15), state="readonly", width=15)
 language_selection.current(0)
 language_selection.bind("<<ComboboxSelected>>", comboclick)
 language_selection.place(relx=0, rely=0)
 
-copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_output_to_clipboard)
+copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_output_to_clipboard, bg="grey80")
 copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
 
-outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
-outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
+outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
+outputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
+
 
 loading_line = ttk.Label(outputFrame, background="grey80")
 loading_line.place(relx=0.1, rely=0.98, relwidth=0, relheight=0.02)
 
-# translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translate, bg="lightgray")
+# translateButton = tk.Button(functional_frame, text="Translate", font=("Bahnschrift Light", 25), command=translate, bg="grey80")
 # translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
 
 fileTypeVar = tk.StringVar()
