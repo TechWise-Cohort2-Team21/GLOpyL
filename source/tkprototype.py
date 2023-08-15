@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import Frame
-from code_translator import translate_line
 import pyperclip
 from tkinter import messagebox
 from langdetect import detect
@@ -307,71 +306,48 @@ functional_frame.place(relx=0.2, rely=0, relwidth=0.6, relheight=1)
 
 inputFrame = Frame(functional_frame)
 inputFrame.place(relx=0.04, rely=0.1, relwidth=0.44, relheight=0.6) 
-
 inputHeaderFrame = Frame(inputFrame)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
-
-# is this unnecessary?
-inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Bahnschrift Light", 15))
-inputTextBox_label.place(relx=0, rely=0)
-# end questionable inclusion
-
-# thing possibly replacing unnecessary thing
 detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
 detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var, font=("Bahnschrift Light", 15))
 detected_language_label.place(relx=0, rely=0)  # Adjust the placement as needed
-# end replacement
-
 copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_input_to_clipboard, bg="lightgray")
 copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8) #, padx=10, pady=10
-
 inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
 inputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
-
 inputTextBox.bind("<KeyRelease>", on_key_release)
 
 outputFrame = Frame(functional_frame)
 outputFrame.place(relx=0.52, rely=0.1, relwidth=0.44, relheight=0.6)
-
 outputHeaderFrame = Frame(outputFrame)
 outputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
-
 language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15), state="readonly", width=15)
 language_selection.current(0)
 language_selection.bind("<<ComboboxSelected>>", comboclick)
 language_selection.place(relx=0, rely=0)
-
 copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_output_to_clipboard, bg="grey80")
 copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
-
 outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
 outputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
-
-
 loading_line = ttk.Label(outputFrame, background="grey80")
 loading_line.place(relx=0.1, rely=0.98, relwidth=0, relheight=0.02)
 
-# translateButton = tk.Button(functional_frame, text="Translate", font=("Bahnschrift Light", 25), command=translate, bg="grey80")
-# translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
+#########
 
-fileTypeVar = tk.StringVar()
-fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".py", ".txt", ".rtf")
-fileTypeOptionMenu.place(relx=0.63, rely=0.75)
+settings_frame = Frame(window)
+settings_frame.place(relx=0.8, rely=0, relwidth=0.2, relheight=1)
+settingsButton = tk.Button(settings_frame, text="Settings", command=openSettings, background="grey80")
+settingsButton.place(relx=0, rely=0.05, relwidth=0.8, relheight=0.05)
+glossary_button = tk.Button(settings_frame, text="Manage Glossary", command=manage_glossary, background="grey80")
+glossary_button.place(relx=0, rely=0.15, relwidth=0.8, relheight=0.05)
+fileTypeVar = tk.StringVar(window, ".py")
+fileTypeOptionMenu = tk.OptionMenu(settings_frame, fileTypeVar, ".py", ".txt", ".rtf")
+fileTypeOptionMenu.config(background="grey80")
+fileTypeOptionMenu.place(relx=0, rely=0.25, relwidth=0.35, relheight=0.05)
+saveButton = tk.Button(settings_frame, text="Save", command=saveFile, background="grey80")
+saveButton.place(relx=0.45, rely=0.25, relwidth=0.35, relheight=0.05)
 
-saveButton = tk.Button(window, text="Save", command=saveFile)
-saveButton.place(relx=0.63, rely=0.8)
-
-glossary_button = tk.Button(window, text="Manage Glossary", command=manage_glossary)
-glossary_button.pack()
-
-# view_glossary_button = tk.Button(window, text="View Glossary", command=view_glossary)
-# view_glossary_button.pack()
-
-settingsButton = tk.Button(window, text="Settings",
-                           command=openSettings)
-settingsButton.place(relx=0.8, rely=0.9, relwidth=0.15,
-                     relheight=0.05)
 ...
 
 window.mainloop()
