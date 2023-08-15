@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import Frame
-from code_translator import translate_line
 import pyperclip
 from tkinter import messagebox
 from langdetect import detect
@@ -11,10 +10,10 @@ from code_translator import translate_line, glossary, glossary_by_language
 
 translated_language = "es"
 supported_languages = [
-    "Spanish Python",
-    "French Python",
-    "Chinese Python",
-    "Hindi Python"
+    "Pitón Español",
+    "Python Français",
+    "Python 简体中文", #Chinese Simplified
+    "हिंदी पायथन" #Hindi
 ]
 translated_code = ""
 
@@ -24,7 +23,7 @@ screen_width = window.winfo_screenwidth()
 screen_height = window.winfo_screenheight()
 window.geometry(f'{screen_width}x{screen_height}')
 window.minsize(900, 500)
-window.maxsize(screen_width, screen_height)
+window.maxsize(window.winfo_screenwidth(), window.winfo_screenheight())
 
 include_comments = tk.BooleanVar()
 include_comments.set(True)
@@ -33,8 +32,8 @@ preserve_keywords.set(False)
 
 
 def lang_abbreviation_to_full(abbr: str):
-    conversion = {"en": "English", "es": "Spanish", "fr": "French", "zh": "Chinese", "hi": "Hindi", "zh-CN": "Chinese (Simplified)"}
-    return conversion[abbr] if abbr in conversion else None
+    conversion = {"en": "English Python", "es": "Pitón Español", "fr": "Python Français", "zh": "Chinese", "hi": "हिंदी पायथन", "zh-CN": "Python 简体中文"}
+    return conversion[abbr] if abbr in conversion else "Unrecognized Language"
 
 
 def translate():
@@ -67,13 +66,13 @@ def comboclick(event):
     global translated_language
     selected_language = language_selection.get()
 
-    if selected_language == "Spanish Python":
+    if selected_language == "Pitón Español":
         translated_language = "es"
-    elif selected_language == "French Python":
+    elif selected_language == "Python Français":
         translated_language = "fr"
-    elif selected_language == "Chinese Python":
+    elif selected_language == "Python 简体中文":
         translated_language = "zh-CN"
-    elif selected_language == "Hindi Python":
+    elif selected_language == "हिंदी पायथन":
         translated_language = "hi"
     else:
         tk.messagebox.showwarning("Unsupported Language",
@@ -168,7 +167,7 @@ def detect_language_and_update():
 
     try:
         human_language = lang_abbreviation_to_full(detect(input_text))
-        detected_language_var.set(f"{human_language} Python")
+        detected_language_var.set(f"{human_language}")
     except LangDetectException:
         detected_language_var.set("Error Detecting Language")
 
@@ -198,7 +197,9 @@ def manage_glossary():
     # Language selection dropdown
     selected_language = tk.StringVar()
     selected_language.set("es")  # Default to Spanish
+    #selected_language.set("Pitón Español")  # Default to Spanish
     language_dropdown = ttk.Combobox(glossary_window, textvariable=selected_language)
+    #language_dropdown['values'] = supported_languages
     language_dropdown['values'] = ("es", "fr", "zh", "hi")
     language_dropdown.pack()
 
@@ -286,79 +287,69 @@ def on_key_release(event):
     detect_language_and_update()
 
 
-titleFrame = Frame(window, bg="grey80")
-titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
-titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40), background="grey80")  # height=20, width=50,
-titleLabel.place(relx=0.1, rely=0.2)
+sidebar = Frame(window, bg="grey80")
+sidebar.place(relx=0, rely=0, relwidth=0.2, relheight=1)
 
-# descLabel = ttk.Label(titleFrame, text="subverting English's monopoly on code.", font=("Arial", 18), background="lightgray")
-# descLabel.place(relx=0.32, rely=0.55)
+globe = ttk.Label(sidebar, text="🌎", font=("Bahnschrift Light", 130), background="grey80") #height=20, width=50,
+globe.place(relx=0.1, rely=0)
+titleLabel = ttk.Label(sidebar, text="GLOpyL", font=("Bahnschrift Light", 45), background="grey80") #height=20, width=50,
+titleLabel.place(relx=0.09, rely=0.3)
+descLabel = ttk.Label(sidebar, text="subverting English's \nmonopoly on code.", font=("Arial", 16), background="grey80")
+descLabel.place(relx=0.1, rely=0.41)
+glopyl_introduction = tk.Text(sidebar, font=("Bahnschrift Light", 12), wrap="word", border=0, bg="grey80")
+glopyl_introduction.place(relx=0.1, rely=0.5, relwidth=0.8, relheight=0.9)
+glopyl_introduction.insert("1.0", "This program translates Python code into a different world languages. At the moment, it is functional for English to Spanish and English to French. \n\nMore languages coming soon!")
+glopyl_introduction.config(state="disabled")
 
+############
 
-#############
-inputFrame = Frame(window)
-inputFrame.place(relx=0.1, rely=0.2, relwidth=0.4, relheight=0.5)  # , padx=10, pady=5
+functional_frame = Frame(window)
+functional_frame.place(relx=0.2, rely=0, relwidth=0.6, relheight=1)
 
-inputHeaderFrame = Frame(inputFrame, width=400, height=50)
-inputHeaderFrame.place(relx=0, rely=0, relwidth=0.9, relheight=0.1)
-
+inputFrame = Frame(functional_frame)
+inputFrame.place(relx=0.04, rely=0.1, relwidth=0.44, relheight=0.6) 
+inputHeaderFrame = Frame(inputFrame)
+inputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
 detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
-
 detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var, font=("Bahnschrift Light", 15))
 detected_language_label.place(relx=0, rely=0)  # Adjust the placement as needed
-
-# inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Bahnschrift Light", 15))
-# inputTextBox_label.place(relx=0, rely=0)
-
-copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_input_to_clipboard)
-copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)  # , padx=10, pady=10
-
-inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
-inputTextBox.place(relx=0, rely=0.1, relwidth=0.9, relheight=0.9)
-
+copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_input_to_clipboard, bg="lightgray")
+copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8) #, padx=10, pady=10
+inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
+inputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
 inputTextBox.bind("<KeyRelease>", on_key_release)
 
-outputFrame = Frame(window, width=400, height=400)
-outputFrame.place(relx=0.5, rely=0.2, relwidth=0.4, relheight=0.5)
-
-outputHeaderFrame = Frame(outputFrame, width=400, height=50)
-outputHeaderFrame.place(relx=0.1, rely=0, relwidth=0.9, relheight=0.1)
-
-language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15), state="readonly")  # width=15
+outputFrame = Frame(functional_frame)
+outputFrame.place(relx=0.52, rely=0.1, relwidth=0.44, relheight=0.6)
+outputHeaderFrame = Frame(outputFrame)
+outputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
+language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15), state="readonly", width=15)
 language_selection.current(0)
 language_selection.bind("<<ComboboxSelected>>", comboclick)
 language_selection.place(relx=0, rely=0)
-
-copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_output_to_clipboard)
+copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_output_to_clipboard, bg="grey80")
 copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
-
-outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
-outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
-
+outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
+outputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
 loading_line = ttk.Label(outputFrame, background="grey80")
 loading_line.place(relx=0.1, rely=0.98, relwidth=0, relheight=0.02)
 
-# translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translate, bg="lightgray")
-# translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
+#########
 
-fileTypeVar = tk.StringVar()
-fileTypeOptionMenu = tk.OptionMenu(window, fileTypeVar, ".py", ".txt", ".rtf")
-fileTypeOptionMenu.place(relx=0.63, rely=0.75)
+settings_frame = Frame(window)
+settings_frame.place(relx=0.8, rely=0, relwidth=0.2, relheight=1)
+settingsButton = tk.Button(settings_frame, text="Settings", command=openSettings, background="grey80")
+settingsButton.place(relx=0, rely=0.05, relwidth=0.8, relheight=0.05)
+glossary_button = tk.Button(settings_frame, text="Manage Glossary", command=manage_glossary, background="grey80")
+glossary_button.place(relx=0, rely=0.15, relwidth=0.8, relheight=0.05)
+fileTypeVar = tk.StringVar(window, ".py")
+fileTypeOptionMenu = tk.OptionMenu(settings_frame, fileTypeVar, ".py", ".txt", ".rtf")
+fileTypeOptionMenu.config(background="grey80")
+fileTypeOptionMenu.place(relx=0, rely=0.25, relwidth=0.35, relheight=0.05)
+saveButton = tk.Button(settings_frame, text="Save", command=saveFile, background="grey80")
+saveButton.place(relx=0.45, rely=0.25, relwidth=0.35, relheight=0.05)
 
-saveButton = tk.Button(window, text="Save", command=saveFile)
-saveButton.place(relx=0.63, rely=0.8)
-
-glossary_button = tk.Button(window, text="Manage Glossary", command=manage_glossary)
-glossary_button.pack()
-
-# view_glossary_button = tk.Button(window, text="View Glossary", command=view_glossary)
-# view_glossary_button.pack()
-
-settingsButton = tk.Button(window, text="Settings",
-                           command=openSettings)
-settingsButton.place(relx=0.8, rely=0.9, relwidth=0.15,
-                     relheight=0.05)
 ...
 
 window.mainloop()
