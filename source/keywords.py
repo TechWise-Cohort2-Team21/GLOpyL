@@ -110,14 +110,14 @@ fr = {
 
 zh = {
     'and': '和',
-    'as': '样地',
-    'async': '不同步的，异步的',
+    'as': '认为是', #样地
+    'async': '不同时的',
     'assert': '断言',
     'await': '等待',
-    'break': '打破',
+    'break': '打破', #checked keywords through break
     'class': '课程',
     'continue': '继续',
-    'def': '给…下定义',
+    'def': '定义',
     'del': '删去',
     'elif': '至少',
     'else':  '别的',
