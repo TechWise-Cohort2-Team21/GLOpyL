@@ -67,7 +67,7 @@ def comboclick(event):
     elif selected_language == "French Python":
         translated_language = "fr"
     elif selected_language == "Chinese Python":
-        translated_language = "zh"
+        translated_language = "zh-CN"
     elif selected_language == "Hindi Python":
         translated_language = "hi"
     else:

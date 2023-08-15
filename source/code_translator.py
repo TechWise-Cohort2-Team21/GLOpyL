@@ -7,7 +7,7 @@ glossary = {}
 glossary_by_language = {
     "es": {},  # Spanish
     "fr": {},  # French
-    "zh": {},  # Chinese
+    "zh-CN": {},  # Chinese
     "hi": {}   # Hindi
 }
 
@@ -25,7 +25,7 @@ def translate_word(word: str, lang: str, preserve_keywords: bool = False) -> str
         dictionary = keywords.es
     elif lang == "fr":
         dictionary = keywords.fr
-    elif lang == "zh":
+    elif lang == "zh-CN":
         dictionary = keywords.zh
     elif lang == "hi":
         dictionary = keywords.hi
@@ -43,6 +43,7 @@ def translate_word(word: str, lang: str, preserve_keywords: bool = False) -> str
         translated_word = translator.translate(" ".join(words), dest=lang).text.replace(" ", "_")
     except Exception as e:
         print(f"Error translating word '{word}': {str(e)}")
+        print(lang)
     translation_memory[lang][word] = translated_word
     return translated_word
 
