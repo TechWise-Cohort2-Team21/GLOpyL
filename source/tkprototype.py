@@ -10,10 +10,10 @@ from code_translator import translate_line, glossary, glossary_by_language
 
 translated_language = "es"
 supported_languages = [
-    "Spanish Python",
-    "French Python",
-    "Chinese Python",
-    "Hindi Python"
+    "Pitón Español",
+    "Python Français",
+    "Python 简体中文", #Chinese Simplified
+    "हिंदी पायथन" #Hindi
 ]
 translated_code = ""
 
@@ -32,8 +32,8 @@ preserve_keywords.set(False)
 
 
 def lang_abbreviation_to_full(abbr: str):
-    conversion = {"en": "English", "es": "Spanish", "fr": "French", "zh": "Chinese", "hi": "Hindi", "zh-CN": "Chinese (Simplified)"}
-    return conversion[abbr] if abbr in conversion else None
+    conversion = {"en": "English Python", "es": "Pitón Español", "fr": "Python Français", "zh": "Chinese", "hi": "हिंदी पायथन", "zh-CN": "Python 简体中文"}
+    return conversion[abbr] if abbr in conversion else "Unrecognized Language"
 
 
 def translate():
@@ -66,13 +66,13 @@ def comboclick(event):
     global translated_language
     selected_language = language_selection.get()
 
-    if selected_language == "Spanish Python":
+    if selected_language == "Pitón Español":
         translated_language = "es"
-    elif selected_language == "French Python":
+    elif selected_language == "Python Français":
         translated_language = "fr"
-    elif selected_language == "Chinese Python":
+    elif selected_language == "Python 简体中文":
         translated_language = "zh-CN"
-    elif selected_language == "Hindi Python":
+    elif selected_language == "हिंदी पायथन":
         translated_language = "hi"
     else:
         tk.messagebox.showwarning("Unsupported Language",
@@ -167,7 +167,7 @@ def detect_language_and_update():
 
     try:
         human_language = lang_abbreviation_to_full(detect(input_text))
-        detected_language_var.set(f"{human_language} Python")
+        detected_language_var.set(f"{human_language}")
     except LangDetectException:
         detected_language_var.set("Error Detecting Language")
 
@@ -197,7 +197,9 @@ def manage_glossary():
     # Language selection dropdown
     selected_language = tk.StringVar()
     selected_language.set("es")  # Default to Spanish
+    #selected_language.set("Pitón Español")  # Default to Spanish
     language_dropdown = ttk.Combobox(glossary_window, textvariable=selected_language)
+    #language_dropdown['values'] = supported_languages
     language_dropdown['values'] = ("es", "fr", "zh", "hi")
     language_dropdown.pack()
 
