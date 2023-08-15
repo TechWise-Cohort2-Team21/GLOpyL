@@ -33,7 +33,7 @@ preserve_keywords.set(False)
 
 
 def lang_abbreviation_to_full(abbr: str):
-    conversion = {"en": "English", "es": "Spanish", "fr": "French", "zh": "Chinese", "hi": "Hindi"}
+    conversion = {"en": "English", "es": "Spanish", "fr": "French", "zh": "Chinese", "hi": "Hindi", "zh-CN": "Chinese (Simplified)"}
     return conversion[abbr] if abbr in conversion else None
 
 
@@ -47,12 +47,17 @@ def translate():
 
     try:
         translated_code = ""
+        lines = input_text.splitlines()
+        num_lines = len(lines)
 
-        for line in input_text.splitlines():
+        for i, line in enumerate(lines):
             translation = translate_line(line, translated_language, include_comments.get(), preserve_keywords.get())
             translated_code += translation + "\n"
             outputTextBox.delete("1.0", tk.END)
             outputTextBox.insert("1.0", translated_code)
+            loading_line.place(relwidth= i/num_lines)
+        
+        loading_line.place(relwidth=0)
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
@@ -283,8 +288,7 @@ def on_key_release(event):
 
 titleFrame = Frame(window, bg="grey80")
 titleFrame.place(relx=0, rely=0, relheight=0.15, relwidth=1)
-titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40),
-                       background="grey80")  # height=20, width=50,
+titleLabel = ttk.Label(titleFrame, text="🌎 GLOpyL", font=("Bahnschrift Light", 40), background="grey80")  # height=20, width=50,
 titleLabel.place(relx=0.1, rely=0.2)
 
 # descLabel = ttk.Label(titleFrame, text="subverting English's monopoly on code.", font=("Arial", 18), background="lightgray")
@@ -301,15 +305,13 @@ inputHeaderFrame.place(relx=0, rely=0, relwidth=0.9, relheight=0.1)
 detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
 
-detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var,
-                                    font=("Bahnschrift Light", 15))
+detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var, font=("Bahnschrift Light", 15))
 detected_language_label.place(relx=0, rely=0)  # Adjust the placement as needed
 
 # inputTextBox_label = ttk.Label(inputHeaderFrame, text="English Python", font=("Bahnschrift Light", 15))
 # inputTextBox_label.place(relx=0, rely=0)
 
-copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12),
-                            command=copy_input_to_clipboard)
+copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_input_to_clipboard)
 copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)  # , padx=10, pady=10
 
 inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
@@ -323,18 +325,19 @@ outputFrame.place(relx=0.5, rely=0.2, relwidth=0.4, relheight=0.5)
 outputHeaderFrame = Frame(outputFrame, width=400, height=50)
 outputHeaderFrame.place(relx=0.1, rely=0, relwidth=0.9, relheight=0.1)
 
-language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15),
-                                  state="readonly")  # width=15
+language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15), state="readonly")  # width=15
 language_selection.current(0)
 language_selection.bind("<<ComboboxSelected>>", comboclick)
 language_selection.place(relx=0, rely=0)
 
-copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12),
-                             command=copy_output_to_clipboard)
+copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_output_to_clipboard)
 copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
 
 outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10))
 outputTextBox.place(relx=0.1, rely=0.1, relwidth=0.9, relheight=0.9)
+
+loading_line = ttk.Label(outputFrame, background="grey80")
+loading_line.place(relx=0.1, rely=0.98, relwidth=0, relheight=0.02)
 
 # translateButton = tk.Button(window, text="Translate", font=("Bahnschrift Light", 25), command=translate, bg="lightgray")
 # translateButton.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
