@@ -22,7 +22,7 @@ supported_languages = [
     "Hindi Python"
 ]
 
-model_path = "orca-mini-3b.ggmlv3.q4_0.bin"  # Update with the correct path if needed
+model_path = "orca-mini-13b.ggmlv3.q4_0.bin"  # Update with the correct path if needed
 model = GPT4All(model_path)
 
 translated_code = ""
@@ -77,7 +77,7 @@ def translate():
         # code_summary = get_code_summary(translated_code, summary_language)  # Call get_code_summary with summary_language
         # summary_textbox.delete("1.0", tk.END)
         # summary_textbox.insert("1.0", code_summary)
-        code_summary = get_code_summary(translated_code)
+        code_summary = get_code_summary(input_text)
         summary_textbox.delete("1.0", tk.END)
         summary_textbox.insert("1.0", code_summary)
         outputTextBox.insert("1.0", translated_code)
