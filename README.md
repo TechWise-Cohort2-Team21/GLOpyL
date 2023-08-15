@@ -1,7 +1,8 @@
 # GLOpyL
 This program translates Python code into a different world languages. We will begin with functionality for English and Spanish, then expand language options if time allows.
 
-The program uses the googletrans library, which can be added with the following terminal command:
-```
-pip3 install googletrans==3.1.0a0
-```
+## Want to connect on LinkedIn?
+Use the links below - we would love to hear from you!
+
+https://www.linkedin.com/in/keshawn-clark-6b2570224/
+https://www.linkedin.com/in/lanielle-pavlik-496581271/
