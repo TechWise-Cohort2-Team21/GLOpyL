@@ -11,6 +11,7 @@ from code_translator import translate_line, glossary, glossary_by_language
 import datetime
 import requests
 import openai
+from gpt4all import GPT4All
 
 translated_language = "es"
 
@@ -20,6 +21,9 @@ supported_languages = [
     "Chinese Python",
     "Hindi Python"
 ]
+
+model_path = "orca-mini-3b.ggmlv3.q4_0.bin"  # Update with the correct path if needed
+model = GPT4All(model_path)
 
 translated_code = ""
 
@@ -46,21 +50,11 @@ def lang_abbreviation_to_full(abbr: str):
     return conversion[abbr] if abbr in conversion else None
 
 
-def get_code_summary(code, summary_language):
-    prompt = f"Please summarize the following code:\n{code}"
+def get_code_summary(code):
+    prompt = "Please summarize the following code:\n" + code
+    summary = model.generate(prompt, max_tokens=100)  # Adjust max_tokens as needed
+    return summary
 
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=100
-    )
-
-    summary = response.choices[0].text.strip()
-
-    # Translate the summary into the selected language
-    translated_summary = translate_line(summary, summary_language, include_comments=False, preserve_keywords=False)
-
-    return translated_summary
 
 
 def translate():
@@ -83,11 +77,13 @@ def translate():
         # code_summary = get_code_summary(translated_code, summary_language)  # Call get_code_summary with summary_language
         # summary_textbox.delete("1.0", tk.END)
         # summary_textbox.insert("1.0", code_summary)
+        code_summary = get_code_summary(translated_code)
+        summary_textbox.delete("1.0", tk.END)
+        summary_textbox.insert("1.0", code_summary)
         outputTextBox.insert("1.0", translated_code)
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
-
 
 
 def comboclick(event):
@@ -205,6 +201,7 @@ def view_glossary():
 
     selected_language_view.trace('w', update_glossary_view)
     update_glossary_view()  # Initial update
+
 
 def openSettings():
     global include_comments
@@ -414,28 +411,28 @@ saveButton.place(relx=0.63, rely=0.8)
 glossary_button = tk.Button(window, text="Manage Glossary", command=manage_glossary)
 glossary_button.pack()
 
-view_glossary_button = tk.Button(window, text="View Glossary", command=view_glossary)
-view_glossary_button.pack()
+# view_glossary_button = tk.Button(window, text="View Glossary", command=view_glossary)
+# view_glossary_button.pack()
 
 settingsButton = tk.Button(window, text="Settings",
                            command=openSettings)
 settingsButton.place(relx=0.8, rely=0.9, relwidth=0.15,
                      relheight=0.05)
 
-# summary_label = tk.Label(window, text="Code Summary:")
-# summary_label.pack()
-# summary_textbox = tk.Text(window, height=5, wrap=tk.WORD)
-# summary_textbox.pack()
+summary_label = tk.Label(window, text="Code Summary:")
+summary_label.pack()
+summary_textbox = tk.Text(window, height=5, wrap=tk.WORD)
+summary_textbox.pack()
 
-# summary_language_label = tk.Label(window, text="Summary Language:")
-# summary_language_label.pack()
-# summary_language_var = tk.StringVar()
-# summary_language_var.set("en")  # Default to English
-# summary_language_dropdown = ttk.Combobox(window, textvariable=summary_language_var)
-# summary_language_dropdown['values'] = ("en", "es", "fr", "zh", "hi")
-# summary_language_dropdown.pack()
+summary_language_label = tk.Label(window, text="Summary Language:")
+summary_language_label.pack()
+summary_language_var = tk.StringVar()
+summary_language_var.set("en")  # Default to English
+summary_language_dropdown = ttk.Combobox(window, textvariable=summary_language_var)
+summary_language_dropdown['values'] = ("en", "es", "fr", "zh", "hi")
+summary_language_dropdown.pack()
 
-view_history_button = tk.Button(window, text="View History", command=view_history)
-view_history_button.pack()
+# view_history_button = tk.Button(window, text="View History", command=view_history)
+# view_history_button.pack()
 
 window.mainloop()
