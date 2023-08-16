@@ -1,5 +1,5 @@
 # GLOpyL
-This program translates Python code into a different world languages. We will begin with functionality for English and Spanish, then expand language options if time allows.
+This program translates Python code (in English) into a different world languages. We have functionality for Spanish and French, and are working on Chinese (Simplified) and Hindi.
 
 ## Want to connect on LinkedIn?
 Use the links below - we would love to hear from you!
