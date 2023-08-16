@@ -1,8 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import Frame
+from tkinter import ttk, Frame
 import pyperclip
-from tkinter import messagebox
+#from tkinter import messagebox
 from langdetect import detect
 import threading
 from langdetect.lang_detect_exception import LangDetectException
