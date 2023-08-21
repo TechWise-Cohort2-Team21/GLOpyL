@@ -81,7 +81,7 @@ fr = {
     'not': 'non', 
     'or': 'ou', 
     'pass': 'passe', 
-    'print': 'affiche', 
+    'print': 'imprimes', 
     'raise': 'lève', 
     'return': 'retournes', 
     'try': 'essaie', 
