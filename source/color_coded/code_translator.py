@@ -56,81 +56,44 @@ def translate_word(word: str, lang: str, preserve_keywords: bool = False) -> str
     return translated_word
 
 
-def translate_line(line: str, lang: str, include_comments: bool = True, preserve_keywords: bool = False) -> str:
+def translate_line(line: str, lang: str, include_comments: bool = True, preserve_keywords: bool = False) -> list:
     global length_incrementer
     length_incrementer = 0
     if not include_comments and line.lstrip().startswith("#"):
-        return ""
-
-    #result = []
-    #current_word = ""
-
-    #for char in line:
-    #    if char.isalpha() or char == "_":
-    #        current_word += char
-    #    elif current_word == "":
-    #        if char == "#" and not include_comments:
-    #            break
-    #        result.append(char)
-    #    else:
-    #        result.append(translate_word(current_word, lang, preserve_keywords))
-    #        current_word = ""
-    #        result.append(char)
-
-    #result.append(translate_word(current_word, lang, preserve_keywords))
-    #translated_line = "".join(result)
-    #return translated_line
+        return []
 
     words = []
     current_word = ""
+    current_color = 0
 
     for char in line:
         if char == '\t':
-            words.append([char, 0, length_incrementer, length_incrementer + 1])
-            length_incrementer += 1
+            if current_word:
+                words.append(translate_word(current_word, lang))
+                current_word = ""
+            words.append(['\t', 0, length_incrementer, length_incrementer + 4])
+            length_incrementer += 4
         elif char in special_char:
-            current_word += char
+            if current_word:
+                words.append(translate_word(current_word, lang))
+                current_word = ""
+            words.append([char, 6, length_incrementer, length_incrementer + 1])
+            length_incrementer += 1
         elif char.isalpha() or char == "_":
             current_word += char
-        elif current_word == "" and char not in special_char:
-            words.append(char)
         else:
-            words.append(translate_word(current_word, lang))
-            current_word = ""
+            if current_word:
+                words.append(translate_word(current_word, lang))
+                current_word = ""
             words.append(char)
 
+    if current_word:
+        words.append(translate_word(current_word, lang))
     
-                    
+    return words
 
-
-    
-    words.append(translate_word(current_word, lang))
-    translated_line = []
-    translated_line.append(words)
-    
-    
-
-
-    for i in translated_line:
-        for j in range(len(i)):
-            if i[j] == ' ':
-                i[j] = [' ', 0, (i[j-1][3]), (i[j-1][3]) + 1]
-
-                for k in range(j, len(i)):
-                    if len(i[k]) > 2:
-                        if type(i[k]) == list:
-                            i[k][2] += 1
-                            i[k][3] += 1
-
-    
-
-
-
-    
-
-    return translated_line
 
 length_incrementer = 0
 
 
-print(translate_line("this is a test sentence", "es"))
+print(translate_line("this is a test", "es"))
