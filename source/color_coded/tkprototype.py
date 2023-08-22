@@ -46,7 +46,6 @@ def lang_abbreviation_to_full(abbr:str):
     return conversion[abbr] if abbr in conversion else None
 
 def translate():
-    global translated_code
     global include_comments
     global preserve_keywords
 
@@ -64,23 +63,28 @@ def translate():
         outputTextBox.delete('1.0', 'end')
 
         for translation_data in translation_data_lines:
-            translated_string = ""
+            output_line = ""
+            tag_positions = []
+            last_end_index = 0
+            for word_data in translation_data:
+                if isinstance(word_data, str):
+                    output_line += word_data
+                else:
+                    word, color_code, start_index, end_index = word_data
+                    spaces = start_index - last_end_index
+                    if spaces > 0:
+                        output_line += " " * spaces
+                    output_line += word
+                    tag_positions.append((color_code, len(output_line) - len(word), len(output_line)))
+                    last_end_index = end_index
+            outputTextBox.insert('end', output_line + '\n')
 
-            # Apply color coding and build the translated string
-            for nested_list in translation_data:
-                for word in nested_list:
-                    start_index = outputTextBox.index('end - 1 char')
-                    if word[0] != ' ':
-                        translated_string += word[0]
-                        outputTextBox.insert(start_index, word[0])
-                        outputTextBox.tag_add(word[0], start_index, f"{outputTextBox.index('end - 1 char')} + {len(word[0])}c")
-                        outputTextBox.tag_config(word[0], foreground=color_codes[word[1]], font=("Bahnschrift Light", 10, "bold"))
-                    else:
-                        translated_string += word[0]
-                        outputTextBox.insert(start_index, word[0])
-
-            # Insert a newline character to separate lines
-            outputTextBox.insert('end', '\n')
+            for color_code, start_index, end_index in tag_positions:
+                tag_start = f'1.0 + {start_index}c'
+                tag_end = f'1.0 + {end_index}c'
+                tag_name = f"color_{start_index}"
+                outputTextBox.tag_add(tag_name, tag_start, tag_end)
+                outputTextBox.tag_config(tag_name, foreground=color_codes[color_code], font=("Bahnschrift Light", 10, "bold"))
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
