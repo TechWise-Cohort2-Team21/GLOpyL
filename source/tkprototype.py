@@ -12,7 +12,7 @@ import datetime
 import requests
 import openai
 from gpt4all import GPT4All
-
+import tkinter.messagebox
 translated_language = "es"
 
 supported_languages = [
@@ -50,11 +50,36 @@ def lang_abbreviation_to_full(abbr: str):
     return conversion[abbr] if abbr in conversion else None
 
 
-def get_code_summary(code):
-    prompt = "Please summarize the following code:\n" + code
-    summary = model.generate(prompt, max_tokens=100)  # Adjust max_tokens as needed
-    return summary
+def get_code_summary(code, summary_model):
+    summary_prompt = f"Please summarize the following code:\n{code}"
 
+    if summary_model == "openai":
+        openai_api_key = "YOUR-API-KEY-HERE"
+        if not openai_api_key or openai_api_key == "YOUR-API-KEY-HERE":
+            return "Error: Please add your OpenAI API key to use this feature."
+
+        openai.api_key = openai_api_key
+
+        def call_openai_gpt3(prompt):
+            try:
+                response = openai.Completion.create(
+                    engine="text-davinci-003",
+                    prompt=prompt,
+                    max_tokens=100
+                )
+                summary = response.choices[0].text.strip()
+                return summary
+            except Exception as e:
+                return f"Error: {str(e)}"
+
+        summary = call_openai_gpt3(summary_prompt)
+    elif summary_model == "gpt4all":
+        gpt4all_prompt = "Please summarize the following code:\n" + code
+        summary = model.generate(gpt4all_prompt, max_tokens=200)
+    else:
+        summary = "Model not supported"
+
+    return summary
 
 
 def translate():
@@ -73,14 +98,18 @@ def translate():
             translated_code += translation + "\n"
             add_to_history(line, translation, translated_language)  # Adding translation to history
 
+        outputTextBox.insert("1.0", translated_code)
+        window.update_idletasks()  # Update the GUI to show the translated code
+
         # summary_language = summary_language_var.get()  # Get the selected summary language
         # code_summary = get_code_summary(translated_code, summary_language)  # Call get_code_summary with summary_language
         # summary_textbox.delete("1.0", tk.END)
         # summary_textbox.insert("1.0", code_summary)
-        code_summary = get_code_summary(input_text)
-        summary_textbox.delete("1.0", tk.END)
-        summary_textbox.insert("1.0", code_summary)
-        outputTextBox.insert("1.0", translated_code)
+        if tk.messagebox.askyesno("Code Summary", "Would you like to get a summary of this translated code?"):
+            summary_model = summary_model_var.get()
+            code_summary = get_code_summary(translated_code, summary_model)
+            summary_textbox.delete("1.0", tk.END)
+            summary_textbox.insert("1.0", code_summary)
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
@@ -178,29 +207,6 @@ def saveFile():
         tk.messagebox.showinfo("File Saved", "Translated code has been saved successfully.")
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to save translated code to the file. Error: {str(e)}")
-
-
-def view_glossary():
-    view_glossary_window = tk.Toplevel(window)
-    view_glossary_window.title("View Glossary")
-
-    selected_language_view = tk.StringVar()
-    selected_language_view.set("es")  # Default to Spanish
-    language_dropdown_view = ttk.Combobox(view_glossary_window, textvariable=selected_language_view)
-    language_dropdown_view['values'] = ("es", "fr", "zh", "hi")
-    language_dropdown_view.pack()
-
-    glossary_text = tk.Text(view_glossary_window)
-    glossary_text.pack()
-
-    def update_glossary_view(*args):
-        glossary_text.delete(1.0, tk.END)  # Clear the text widget
-        lang = selected_language_view.get()
-        for term, translation in glossary_by_language[lang].items():
-            glossary_text.insert(tk.END, f"{term} : {translation}\n")
-
-    selected_language_view.trace('w', update_glossary_view)
-    update_glossary_view()  # Initial update
 
 
 def openSettings():
@@ -431,6 +437,14 @@ summary_language_var.set("en")  # Default to English
 summary_language_dropdown = ttk.Combobox(window, textvariable=summary_language_var)
 summary_language_dropdown['values'] = ("en", "es", "fr", "zh", "hi")
 summary_language_dropdown.pack()
+# Create a StringVar to hold the selected summarization model
+summary_model_var = tk.StringVar()
+summary_model_var.set("openai")  # Default to OpenAI
+
+# Create a dropdown menu to select the summarization model
+summary_model_dropdown = ttk.Combobox(window, textvariable=summary_model_var)
+summary_model_dropdown['values'] = ("openai", "gpt4all")
+summary_model_dropdown.pack()
 
 # view_history_button = tk.Button(window, text="View History", command=view_history)
 # view_history_button.pack()
