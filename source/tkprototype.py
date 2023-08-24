@@ -383,8 +383,8 @@ glopyl_introduction.config(state="disabled")
 functional_frame = Frame(window)
 functional_frame.place(relx=0.2, rely=0, relwidth=0.6, relheight=1)
 
-inputFrame = Frame(functional_frame)
-inputFrame.place(relx=0.04, rely=0.1, relwidth=0.44, relheight=0.6)
+inputFrame = Frame(functional_frame, background="pink")
+inputFrame.place(relx=0.04, rely=0.05, relwidth=0.44, relheight=0.9)
 inputHeaderFrame = Frame(inputFrame)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
 detected_language_var = tk.StringVar()
@@ -400,7 +400,7 @@ inputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
 inputTextBox.bind("<KeyRelease>", on_key_release)
 
 outputFrame = Frame(functional_frame)
-outputFrame.place(relx=0.52, rely=0.1, relwidth=0.44, relheight=0.6)
+outputFrame.place(relx=0.52, rely=0.05, relwidth=0.44, relheight=0.9)
 outputHeaderFrame = Frame(outputFrame)
 outputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
 language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15),
@@ -416,10 +416,6 @@ outputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
 loading_line = ttk.Label(outputFrame, background="grey80")
 loading_line.place(relx=0, rely=0.98, relwidth=0, relheight=0.02)
 
-summary_label = tk.Label(window, text="Code Summary:")
-summary_label.place(relx=0.4, rely=0.70)
-summary_textbox = tk.Text(window, height=5, wrap=tk.WORD)
-summary_textbox.place(relx=0.2, rely=0.73, relwidth=0.9, relheight=0.1)
 
 #########
 
@@ -436,22 +432,18 @@ fileTypeOptionMenu.place(relx=0, rely=0.25, relwidth=0.35, relheight=0.05)
 saveButton = tk.Button(settings_frame, text="Save", command=saveFile, background="grey80")
 saveButton.place(relx=0.45, rely=0.25, relwidth=0.35, relheight=0.05)
 
-
-summary_language_label = tk.Label(settings_frame, text="Summary Language:")
-summary_language_label.place(relx=0, rely=0.35)
-
-summary_language_var = tk.StringVar()
-summary_language_var.set("en")  # Default to English
-summary_language_dropdown = ttk.Combobox(window, textvariable=summary_language_var)
-summary_language_dropdown['values'] = ("en", "es", "fr", "zh", "hi")
-summary_language_dropdown.pack()
-
+summary_model_label = tk.Label(settings_frame, text="Summary AI:")
+summary_model_label.place(relx=0, rely=0.35, relwidth=0.35, relheight=0.05)
 summary_model_var = tk.StringVar()
 summary_model_var.set("openai")  # Default to OpenAI
-
-summary_model_dropdown = ttk.Combobox(window, textvariable=summary_model_var)
+summary_model_dropdown = ttk.Combobox(settings_frame, textvariable=summary_model_var)
 summary_model_dropdown['values'] = ("openai", "gpt4all")
-summary_model_dropdown.pack()
+summary_model_dropdown.place(relx=0.45, rely=0.35, relwidth=0.35, relheight=0.05)
+
+summary_label = tk.Label(settings_frame, text="Code Summary:")
+summary_label.place(relx=0, rely=0.45, relwidth=0.8, relheight=0.05)
+summary_textbox = tk.Text(settings_frame, height=5, wrap=tk.WORD)
+summary_textbox.place(relx=0, rely=0.5, relwidth=0.8, relheight=0.45)
 
 # view_history_button = tk.Button(window, text="View History", command=view_history)
 # view_history_button.pack()
