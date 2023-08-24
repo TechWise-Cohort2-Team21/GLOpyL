@@ -9,9 +9,7 @@ from code_translator import translate_line, glossary, glossary_by_language
 import datetime
 import openai
 from gpt4all import GPT4All
-
-from googletrans import Translator # I know it's gross code, we didn't have a choice
-
+from googletrans import Translator  # I know it's gross code, we didn't have a choice
 
 # GLOBAL VARIABLES
 target_language = "es"
@@ -37,20 +35,27 @@ include_comments.set(True)
 preserve_keywords = tk.BooleanVar()
 preserve_keywords.set(False)
 
-#HELPER FUNCTIONS
+
+# HELPER FUNCTIONS
 def lang_abbreviation_to_full(abbr: str):
-    conversion = {"en": "English Python", "es": "Pitón Español", "fr": "Python Français", "hi": "हिंदी पायथन", "zh-CN": "Python 简体中文"}
+    conversion = {"en": "English Python", "es": "Pitón Español", "fr": "Python Français", "hi": "हिंदी पायथन",
+                  "zh-CN": "Python 简体中文"}
     return conversion[abbr] if abbr in conversion else "Unsupported Language"
+
+
 def full_lang_to_abbreviation(full: str):
-    conversion = {"English Python": "en", "Pitón Español": "es", "Python Français": "fr", "हिंदी पायथन": "hi", "Python 简体中文": "zh-CN"}
+    conversion = {"English Python": "en", "Pitón Español": "es", "Python Français": "fr", "हिंदी पायथन": "hi",
+                  "Python 简体中文": "zh-CN"}
     return conversion[full] if full in conversion else False
+
 
 # MAIN FUNCTIONS
 def get_code_summary(code):
     global target_language
     summary_model = summary_model_var.get()
     translator = Translator()
-    summary_prompt = translator.translate("Please summarize the following code:", dest=target_language).text + f"\n{code}"
+    summary_prompt = translator.translate("Please summarize the following code:",
+                                          dest=target_language).text + f"\n{code}"
 
     if summary_model == "openai":
         openai_api_key = "YOUR-API-KEY-HERE"
@@ -67,8 +72,9 @@ def get_code_summary(code):
 
         return call_openai_gpt3(summary_prompt)
     if summary_model == "gpt4all":
-        return model.generate(summary_prompt, max_tokens=200)
+        return model.generate(summary_prompt, max_tokens=200, n_batch=50)
     return "Model not supported"
+
 
 def translate():
     global target_language
@@ -88,10 +94,10 @@ def translate():
             outputTextBox.delete("1.0", tk.END)
             outputTextBox.insert("1.0", output_text)
             loading_line.place(relwidth=i / num_lines)
-        
+
         add_to_history(input_text, output_text, target_language)  # Adding translation to history
         loading_line.place(relwidth=0)
-        #window.update_idletasks()  # Update the GUI to show the translated code
+        # window.update_idletasks()  # Update the GUI to show the translated code
 
         if tk.messagebox.askyesno("Code Summary", "Would you like to get a summary of this translated code?"):
             code_summary = get_code_summary(input_text)
@@ -102,10 +108,10 @@ def translate():
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
 
 
-
 def add_to_history(input_text, output_text, language):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     translation_history.append((input_text, output_text, language, timestamp))
+
 
 def view_history():
     history_window = tk.Toplevel(window)
@@ -129,7 +135,7 @@ def view_history():
         concatenated_translation = "\n".join(selected_translations)
         outputTextBox.delete("1.0", tk.END)
         outputTextBox.insert("1.0", concatenated_translation)
-        
+
         selected_inputs = [history_tree.item(item)["values"][2] for item in selected_items]
         concatenated_inputs = "\n".join(selected_inputs)
         inputTextBox.delete("1.0", tk.END)
@@ -138,12 +144,14 @@ def view_history():
     revert_button = tk.Button(history_window, text="Revert to Selected", command=revert_to_selected)
     revert_button.pack()
 
+
 def copy_input_to_clipboard():
     try:
         pyperclip.copy(inputTextBox.get("1.0", tk.END))
         tk.messagebox.showinfo("Copy to Clipboard", "Original code has been copied to the clipboard.")
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to copy original code to the clipboard. Error: {str(e)}")
+
 
 def copy_output_to_clipboard():
     global output_text
@@ -152,6 +160,7 @@ def copy_output_to_clipboard():
         tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to copy translated code to the clipboard. Error: {str(e)}")
+
 
 def saveFile():
     global output_text
@@ -177,6 +186,7 @@ def saveFile():
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to save translated code to the file. Error: {str(e)}")
 
+
 def openSettings():
     global include_comments
     global preserve_keywords
@@ -189,6 +199,7 @@ def openSettings():
     preserve_keywords_checkbox.pack()
     settingsWindow.geometry("200x200")
 
+
 def detect_language_and_update():
     input_text = inputTextBox.get("1.0", tk.END).strip()
     try:
@@ -196,6 +207,7 @@ def detect_language_and_update():
         detected_language_var.set(f"{input_language}")
     except LangDetectException:
         detected_language_var.set("Error Detecting Language")
+
 
 def manage_glossary():
     glossary_window = tk.Toplevel(window)
@@ -285,6 +297,7 @@ def manage_glossary():
     glossary_list.pack()
     update_glossary_list()
 
+
 # TIME AND EVENT HANDLING
 def debounce(wait):
     def decorator(fn):
@@ -297,22 +310,25 @@ def debounce(wait):
         timer = threading.Timer(wait, lambda: None)
         timer.start()
         return debounced
-    
+
     return decorator
+
 
 @debounce(0.5)  # Delay of 0.5 seconds
 def on_key_release(event):
     detect_language_and_update()
     translate()
-    
+
+
 @debounce(0.5)
 def comboclick(event):
     global target_language
     target_language = full_lang_to_abbreviation(language_selection.get())
     if not target_language:
-        tk.messagebox.showwarning("Unsupported Language","The selected language is not supported.")
+        tk.messagebox.showwarning("Unsupported Language", "The selected language is not supported.")
         language_selection.set("Select Language")
     translate()
+
 
 # UI
 sidebar = Frame(window, bg="grey80")
@@ -320,16 +336,16 @@ sidebar.place(relx=0, rely=0, relwidth=0.2, relheight=1)
 
 globe = ttk.Label(sidebar, text="🌎", font=("Bahnschrift Light", 130), background="grey80")  # height=20, width=50,
 globe.place(relx=0.1, rely=0)
-titleLabel = ttk.Label(sidebar, text="GLOpyL", font=("Bahnschrift Light", 45), background="grey80")  # height=20, width=50,
+titleLabel = ttk.Label(sidebar, text="GLOpyL", font=("Bahnschrift Light", 45),
+                       background="grey80")  # height=20, width=50,
 titleLabel.place(relx=0.09, rely=0.3)
 descLabel = ttk.Label(sidebar, text="subverting English's \nmonopoly on code.", font=("Arial", 16), background="grey80")
 descLabel.place(relx=0.1, rely=0.41)
 glopyl_introduction = tk.Text(sidebar, font=("Bahnschrift Light", 12), wrap="word", border=0, bg="grey80")
 glopyl_introduction.place(relx=0.1, rely=0.5, relwidth=0.8, relheight=0.9)
-glopyl_introduction.insert("1.0","This program translates Python code into a different world languages. At the moment, it is functional for Spanish, French Chinese (Simplified), and Hindi.")
+glopyl_introduction.insert("1.0",
+                           "This program translates Python code into a different world languages. At the moment, it is functional for Spanish, French Chinese (Simplified), and Hindi.")
 glopyl_introduction.config(state="disabled")
-
-
 
 functional_frame = Frame(window)
 functional_frame.place(relx=0.2, rely=0, relwidth=0.6, relheight=1)
@@ -340,9 +356,11 @@ inputHeaderFrame = Frame(inputFrame)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
 detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
-detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var,font=("Bahnschrift Light", 15))
+detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var,
+                                    font=("Bahnschrift Light", 15))
 detected_language_label.place(relx=0, rely=0)  # Adjust the placement as needed
-copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_input_to_clipboard, bg="lightgray")
+copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12),
+                            command=copy_input_to_clipboard, bg="lightgray")
 copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)  # , padx=10, pady=10
 inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
 inputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
@@ -352,18 +370,18 @@ outputFrame = Frame(functional_frame)
 outputFrame.place(relx=0.52, rely=0.05, relwidth=0.44, relheight=0.9)
 outputHeaderFrame = Frame(outputFrame)
 outputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
-language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15), state="readonly", width=15)
+language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15),
+                                  state="readonly", width=15)
 language_selection.current(0)
 language_selection.bind("<<ComboboxSelected>>", comboclick)
 language_selection.place(relx=0, rely=0)
-copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_output_to_clipboard, bg="grey80")
+copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12),
+                             command=copy_output_to_clipboard, bg="grey80")
 copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
 outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
 outputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
 loading_line = ttk.Label(outputFrame, background="grey80")
 loading_line.place(relx=0, rely=0.98, relwidth=0, relheight=0.02)
-
-
 
 settings_frame = Frame(window)
 settings_frame.place(relx=0.8, rely=0, relwidth=0.2, relheight=1)
