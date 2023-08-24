@@ -1,3 +1,4 @@
+# IMPORTED LIBRARIES
 import tkinter as tk
 from tkinter import ttk, Frame, messagebox
 import pyperclip
@@ -11,24 +12,17 @@ from gpt4all import GPT4All
 
 from googletrans import Translator # I know it's gross code, we didn't have a choice
 
-translated_language = "es"
 
-supported_languages = [
-    "Pitón Español",
-    "Python Français",
-    "Python 简体中文",  # Chinese Simplified
-    "हिंदी पायथन"  # Hindi
-]
-
+# GLOBAL VARIABLES
+target_language = "es"
+output_text = ""
+translation_history = []
+supported_languages = ["Pitón Español", "Python Français", "Python 简体中文", "हिंदी पायथन"]
 model_path = "orca-mini-13b.ggmlv3.q4_0.bin"  # Update with the correct path if needed
 model = GPT4All(model_path)
-
-translated_code = ""
-
-translation_history = []
-
 openai.api_key = ""
 
+# UI SETUP
 window = tk.Tk()
 window.title("GLOpyL")
 screen_width = window.winfo_screenwidth()
@@ -37,120 +31,81 @@ window.geometry(f'{screen_width}x{screen_height}')
 window.minsize(900, 500)
 window.maxsize(window.winfo_screenwidth(), window.winfo_screenheight())
 
+# UI-RELATED GLOBAL VARIABLES
 include_comments = tk.BooleanVar()
 include_comments.set(True)
 preserve_keywords = tk.BooleanVar()
 preserve_keywords.set(False)
 
-
+#HELPER FUNCTIONS
 def lang_abbreviation_to_full(abbr: str):
-    conversion = {"en": "English Python", "es": "Pitón Español", "fr": "Python Français", "zh": "Chinese",
-                  "hi": "हिंदी पायथन", "zh-CN": "Python 简体中文"}
-    return conversion[abbr] if abbr in conversion else "Unrecognized Language"
+    conversion = {"en": "English Python", "es": "Pitón Español", "fr": "Python Français", "hi": "हिंदी पायथन", "zh-CN": "Python 简体中文"}
+    return conversion[abbr] if abbr in conversion else "Unsupported Language"
+def full_lang_to_abbreviation(full: str):
+    conversion = {"English Python": "en", "Pitón Español": "es", "Python Français": "fr", "हिंदी पायथन": "hi", "Python 简体中文": "zh-CN"}
+    return conversion[full] if full in conversion else False
 
-
-def get_code_summary(code, summary_model):
-    global translated_language
+# MAIN FUNCTIONS
+def get_code_summary(code):
+    global target_language
+    summary_model = summary_model_var.get()
     translator = Translator()
-    summary_prompt = translator.translate("Please summarize the following code:", dest=translated_language).text
-    summary_prompt += f"\n{code}"
+    summary_prompt = translator.translate("Please summarize the following code:", dest=target_language).text + f"\n{code}"
 
     if summary_model == "openai":
         openai_api_key = "YOUR-API-KEY-HERE"
         if not openai_api_key or openai_api_key == "YOUR-API-KEY-HERE":
             return "Error: Please add your OpenAI API key to use this feature."
-
         openai.api_key = openai_api_key
 
         def call_openai_gpt3(prompt):
             try:
-                response = openai.Completion.create(
-                    engine="text-davinci-003",
-                    prompt=prompt,
-                    max_tokens=100
-                )
-                summary = response.choices[0].text.strip()
-                return summary
+                response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=100)
+                return response.choices[0].text.strip()
             except Exception as e:
                 return f"Error: {str(e)}"
 
-        summary = call_openai_gpt3(summary_prompt)
-    elif summary_model == "gpt4all":
-        gpt4all_prompt = "Please summarize the following code:\n" + code
-        summary = model.generate(gpt4all_prompt, max_tokens=200)
-    else:
-        summary = "Model not supported"
-
-    return summary
-
+        return call_openai_gpt3(summary_prompt)
+    if summary_model == "gpt4all":
+        return model.generate(summary_prompt, max_tokens=200)
+    return "Model not supported"
 
 def translate():
-    global translated_code
+    global target_language
+    global output_text
     global include_comments
     global preserve_keywords
 
     outputTextBox.delete("1.0", tk.END)
     input_text = inputTextBox.get("1.0", tk.END)
+    input_lines = input_text.splitlines()
+    output_text = ""
+    num_lines = len(input_lines)
 
     try:
-        translated_code = ""
-        lines = input_text.splitlines()
-        num_lines = len(lines)
-
-        for i, line in enumerate(lines):
-            translation = translate_line(line, translated_language, include_comments.get(), preserve_keywords.get())
-            translated_code += translation + "\n"
-
+        for i, line in enumerate(input_lines):
+            output_text += translate_line(line, target_language, include_comments.get(), preserve_keywords.get()) + "\n"
             outputTextBox.delete("1.0", tk.END)
-            outputTextBox.insert("1.0", translated_code)
+            outputTextBox.insert("1.0", output_text)
             loading_line.place(relwidth=i / num_lines)
-            loading_line.place(relwidth=0)
+        
+        add_to_history(input_text, output_text, target_language)  # Adding translation to history
+        loading_line.place(relwidth=0)
+        #window.update_idletasks()  # Update the GUI to show the translated code
 
-            add_to_history(line, translation, translated_language)  # Adding translation to history
-
-
-        window.update_idletasks()  # Update the GUI to show the translated code
-
-        # summary_language = summary_language_var.get()  # Get the selected summary language
-        # code_summary = get_code_summary(translated_code, summary_language)  # Call get_code_summary with summary_language
-        # summary_textbox.delete("1.0", tk.END)
-        # summary_textbox.insert("1.0", code_summary)
         if tk.messagebox.askyesno("Code Summary", "Would you like to get a summary of this translated code?"):
-            summary_model = summary_model_var.get()
-            code_summary = get_code_summary(input_text, summary_model)
+            code_summary = get_code_summary(input_text)
             summary_textbox.delete("1.0", tk.END)
             summary_textbox.insert("1.0", code_summary)
-
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
 
 
-def comboclick(event):
-    global translated_language
-    selected_language = language_selection.get()
 
-    if selected_language == "Pitón Español":
-        translated_language = "es"
-    elif selected_language == "Python Français":
-        translated_language = "fr"
-    elif selected_language == "Python 简体中文":
-        translated_language = "zh-CN"
-    elif selected_language == "हिंदी पायथन":
-        translated_language = "hi"
-    else:
-        tk.messagebox.showwarning("Unsupported Language",
-                                  f"The selected language '{selected_language}' is not supported.")
-        language_selection.set("Select Language")
-
-
-def add_to_history(input_text, translated_text, language):
+def add_to_history(input_text, output_text, language):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    translation_history.append((input_text, translated_text, language, timestamp))
-
-
-from tkinter import ttk
-
+    translation_history.append((input_text, output_text, language, timestamp))
 
 def view_history():
     history_window = tk.Toplevel(window)
@@ -169,35 +124,37 @@ def view_history():
 
     def revert_to_selected():
         selected_items = history_tree.selection()
+
         selected_translations = [history_tree.item(item)["values"][3] for item in selected_items]
         concatenated_translation = "\n".join(selected_translations)
         outputTextBox.delete("1.0", tk.END)
         outputTextBox.insert("1.0", concatenated_translation)
+        
+        selected_inputs = [history_tree.item(item)["values"][2] for item in selected_items]
+        concatenated_inputs = "\n".join(selected_inputs)
+        inputTextBox.delete("1.0", tk.END)
+        inputTextBox.insert("1.0", concatenated_inputs)
 
     revert_button = tk.Button(history_window, text="Revert to Selected", command=revert_to_selected)
     revert_button.pack()
 
-
 def copy_input_to_clipboard():
     try:
-        original_code = inputTextBox.get("1.0", tk.END)
-        pyperclip.copy(original_code)
+        pyperclip.copy(inputTextBox.get("1.0", tk.END))
         tk.messagebox.showinfo("Copy to Clipboard", "Original code has been copied to the clipboard.")
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to copy original code to the clipboard. Error: {str(e)}")
 
-
 def copy_output_to_clipboard():
+    global output_text
     try:
-        translated_code = outputTextBox.get("1.0", tk.END)
-        pyperclip.copy(translated_code)
+        pyperclip.copy(output_text)
         tk.messagebox.showinfo("Copy to Clipboard", "Translated code has been copied to the clipboard.")
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to copy translated code to the clipboard. Error: {str(e)}")
 
-
 def saveFile():
-    global translated_code
+    global output_text
     fileType = fileTypeVar.get()
 
     try:
@@ -205,21 +162,20 @@ def saveFile():
             if fileType == ".rtf":
                 # Write RTF header and content
                 file.write("{\\\\rtf1\\\\ansi\\\\deff0\\n")
-                file.write(translated_code.replace("\\n", "\\\\par\\n"))
+                file.write(output_text.replace("\\n", "\\\\par\\n"))
                 file.write("}")
             elif fileType == ".py":
-                lines = translated_code.split("\n")
+                lines = output_text.split("\n")
                 for line in lines:
                     file.write(f"# {line}\n")
                 input_text = inputTextBox.get("1.0", tk.END)
                 file.write("\n\n\n")
                 file.write(input_text)
             else:
-                file.write(translated_code)
+                file.write(output_text)
         tk.messagebox.showinfo("File Saved", "Translated code has been saved successfully.")
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to save translated code to the file. Error: {str(e)}")
-
 
 def openSettings():
     global include_comments
@@ -227,55 +183,27 @@ def openSettings():
 
     settingsWindow = tk.Toplevel(window)
     settingsWindow.title("Settings")
-
     include_comments_checkbox = tk.Checkbutton(settingsWindow, text="Include Comments", variable=include_comments)
     include_comments_checkbox.pack()
-
     preserve_keywords_checkbox = tk.Checkbutton(settingsWindow, text="Preserve Keywords", variable=preserve_keywords)
     preserve_keywords_checkbox.pack()
-
-    settingsWindow_width = 200
-    settingsWindow_height = 200
-    settingsWindow.geometry(f"{settingsWindow_width}x{settingsWindow_height}")
-
+    settingsWindow.geometry("200x200")
 
 def detect_language_and_update():
     input_text = inputTextBox.get("1.0", tk.END).strip()
-
     try:
-        human_language = lang_abbreviation_to_full(detect(input_text))
-        detected_language_var.set(f"{human_language}")
+        input_language = lang_abbreviation_to_full(detect(input_text))
+        detected_language_var.set(f"{input_language}")
     except LangDetectException:
         detected_language_var.set("Error Detecting Language")
-
-    translate()
-
-
-def debounce(wait):
-    def decorator(fn):
-        def debounced(*args, **kwargs):
-            nonlocal timer
-            timer.cancel()
-            timer = threading.Timer(wait, lambda: fn(*args, **kwargs))
-            timer.start()
-
-        timer = threading.Timer(wait, lambda: None)
-        timer.start()
-        return debounced
-
-    return decorator
-
 
 def manage_glossary():
     glossary_window = tk.Toplevel(window)
     glossary_window.title("Glossary Management")
 
-    # Language selection dropdown
     selected_language = tk.StringVar()
     selected_language.set("es")  # Default to Spanish
-    # selected_language.set("Pitón Español")  # Default to Spanish
     language_dropdown = ttk.Combobox(glossary_window, textvariable=selected_language)
-    # language_dropdown['values'] = supported_languages
     language_dropdown['values'] = ("es", "fr", "zh", "hi")
     language_dropdown.pack()
 
@@ -357,11 +285,33 @@ def manage_glossary():
     glossary_list.pack()
     update_glossary_list()
 
+def debounce(wait):
+    def decorator(fn):
+        def debounced(*args, **kwargs):
+            nonlocal timer
+            timer.cancel()
+            timer = threading.Timer(wait, lambda: fn(*args, **kwargs))
+            timer.start()
+
+        timer = threading.Timer(wait, lambda: None)
+        timer.start()
+        return debounced
+    
+    return decorator
 
 @debounce(0.5)  # Delay of 0.5 seconds
 def on_key_release(event):
     detect_language_and_update()
-
+    translate()
+    
+@debounce(0.5)
+def comboclick(event):
+    global target_language
+    target_language = full_lang_to_abbreviation(language_selection.get())
+    if not target_language:
+        tk.messagebox.showwarning("Unsupported Language","The selected language is not supported.")
+        language_selection.set("Select Language")
+    translate()
 
 sidebar = Frame(window, bg="grey80")
 sidebar.place(relx=0, rely=0, relwidth=0.2, relheight=1)
