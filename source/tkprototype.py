@@ -83,7 +83,8 @@ def translate():
     global preserve_keywords
 
     outputTextBox.delete("1.0", tk.END)
-    input_lines = inputTextBox.get("1.0", tk.END).splitlines()
+    input_text = inputTextBox.get("1.0", tk.END)
+    input_lines = input_text.splitlines()
     output_text = ""
     num_lines = len(input_lines)
 
