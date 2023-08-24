@@ -285,6 +285,7 @@ def manage_glossary():
     glossary_list.pack()
     update_glossary_list()
 
+# TIME AND EVENT HANDLING
 def debounce(wait):
     def decorator(fn):
         def debounced(*args, **kwargs):
@@ -313,38 +314,35 @@ def comboclick(event):
         language_selection.set("Select Language")
     translate()
 
+# UI
 sidebar = Frame(window, bg="grey80")
 sidebar.place(relx=0, rely=0, relwidth=0.2, relheight=1)
 
 globe = ttk.Label(sidebar, text="🌎", font=("Bahnschrift Light", 130), background="grey80")  # height=20, width=50,
 globe.place(relx=0.1, rely=0)
-titleLabel = ttk.Label(sidebar, text="GLOpyL", font=("Bahnschrift Light", 45),
-                       background="grey80")  # height=20, width=50,
+titleLabel = ttk.Label(sidebar, text="GLOpyL", font=("Bahnschrift Light", 45), background="grey80")  # height=20, width=50,
 titleLabel.place(relx=0.09, rely=0.3)
 descLabel = ttk.Label(sidebar, text="subverting English's \nmonopoly on code.", font=("Arial", 16), background="grey80")
 descLabel.place(relx=0.1, rely=0.41)
 glopyl_introduction = tk.Text(sidebar, font=("Bahnschrift Light", 12), wrap="word", border=0, bg="grey80")
 glopyl_introduction.place(relx=0.1, rely=0.5, relwidth=0.8, relheight=0.9)
-glopyl_introduction.insert("1.0",
-                           "This program translates Python code into a different world languages. At the moment, it is functional for English to Spanish and English to French. \n\nMore languages coming soon!")
+glopyl_introduction.insert("1.0","This program translates Python code into a different world languages. At the moment, it is functional for Spanish, French Chinese (Simplified), and Hindi.")
 glopyl_introduction.config(state="disabled")
 
-############
+
 
 functional_frame = Frame(window)
 functional_frame.place(relx=0.2, rely=0, relwidth=0.6, relheight=1)
 
-inputFrame = Frame(functional_frame, background="pink")
+inputFrame = Frame(functional_frame)
 inputFrame.place(relx=0.04, rely=0.05, relwidth=0.44, relheight=0.9)
 inputHeaderFrame = Frame(inputFrame)
 inputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
 detected_language_var = tk.StringVar()
 detected_language_var.set("Detecting language...")  # Default text
-detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var,
-                                    font=("Bahnschrift Light", 15))
+detected_language_label = ttk.Label(inputHeaderFrame, textvariable=detected_language_var,font=("Bahnschrift Light", 15))
 detected_language_label.place(relx=0, rely=0)  # Adjust the placement as needed
-copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12),
-                            command=copy_input_to_clipboard, bg="lightgray")
+copyInputButton = tk.Button(inputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_input_to_clipboard, bg="lightgray")
 copyInputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)  # , padx=10, pady=10
 inputTextBox = tk.Text(inputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
 inputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
@@ -354,13 +352,11 @@ outputFrame = Frame(functional_frame)
 outputFrame.place(relx=0.52, rely=0.05, relwidth=0.44, relheight=0.9)
 outputHeaderFrame = Frame(outputFrame)
 outputHeaderFrame.place(relx=0, rely=0, relwidth=1, relheight=0.1)
-language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15),
-                                  state="readonly", width=15)
+language_selection = ttk.Combobox(outputHeaderFrame, value=supported_languages, font=("Bahnschrift Light", 15), state="readonly", width=15)
 language_selection.current(0)
 language_selection.bind("<<ComboboxSelected>>", comboclick)
 language_selection.place(relx=0, rely=0)
-copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12),
-                             command=copy_output_to_clipboard, bg="grey80")
+copyOutputButton = tk.Button(outputHeaderFrame, text="COPY", font=("Bahnschrift Light", 12), command=copy_output_to_clipboard, bg="grey80")
 copyOutputButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.8)
 outputTextBox = tk.Text(outputFrame, height=10, width=30, font=("Bahnschrift Light", 10), border=0)
 outputTextBox.place(relx=0, rely=0.1, relwidth=1, relheight=0.9)
@@ -368,7 +364,6 @@ loading_line = ttk.Label(outputFrame, background="grey80")
 loading_line.place(relx=0, rely=0.98, relwidth=0, relheight=0.02)
 
 
-#########
 
 settings_frame = Frame(window)
 settings_frame.place(relx=0.8, rely=0, relwidth=0.2, relheight=1)
@@ -399,5 +394,5 @@ summary_textbox.place(relx=0, rely=0.5, relwidth=0.8, relheight=0.45)
 view_history_button = tk.Button(window, text="View History", command=view_history)
 view_history_button.pack()
 
-
+# MAIN LOOP
 window.mainloop()
