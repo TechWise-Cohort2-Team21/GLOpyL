@@ -93,15 +93,16 @@ def translate():
         loading_line.place(relwidth=0)
         #window.update_idletasks()  # Update the GUI to show the translated code
 
-        if tk.messagebox.askyesno("Code Summary", "Would you like to get a summary of this translated code?"):
-            code_summary = get_code_summary(input_text)
-            summary_textbox.delete("1.0", tk.END)
-            summary_textbox.insert("1.0", code_summary)
+        # if tk.messagebox.askyesno("Code Summary", "Would you like to get a summary of this translated code?"):
+        #     code_summary = get_code_summary(input_text)
+        #     summary_textbox.delete("1.0", tk.END)
+        #     summary_textbox.insert("1.0", code_summary)
+        ########################################################################
+        # CHANGE THIS TO A "SUMMARIZE" BUTTON IN THE SETTINGS BAR              #
+        ########################################################################
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"Failed to translate code. Error: {str(e)}")
-
-
 
 def add_to_history(input_text, output_text, language):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
