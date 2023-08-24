@@ -95,7 +95,6 @@ def translate():
             outputTextBox.insert('end', output_line + '\n')
             # Keep track of line
             line_num += 1
-            print(f"Tag Position:{tag_positions} \nTranslated Line:{output_line}")
 
             for color_code, start_index, end_index in tag_positions:
                 tag_start = f'{line_num}.{start_index}'
