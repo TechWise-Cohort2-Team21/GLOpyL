@@ -54,31 +54,52 @@ def translate():
 
     try:
         translation_data_lines = []
-
         for line in input_text.splitlines():
             translation_data = translate_line(line, translated_language, include_comments=include_comments.get())
             translation_data_lines.append(translation_data)
+            
 
-        # Clear the existing content in the text widget
         outputTextBox.delete('1.0', 'end')
+        line_num = 0
+
+
 
         for translation_data in translation_data_lines:
             output_line = ""
+            
+            # tag_positions reformats color coding data
             tag_positions = []
+            
+            # keeps track of the end index of the last processed word in the current translation data line
             last_end_index = 0
+
+            # iterate through each element: [transl., colorcode, start, end]
             for word_data in translation_data:
+
+                # if string, add to output_line
                 if isinstance(word_data, str):
                     output_line += word_data
+                
+                
                 else:
                     word, color_code, start_index, end_index = word_data
                     output_line += word
+                    
+                    # add tuple of tag position info to tag_positions
+                    # tuple contains colorcode, current length of output line before the word (start of coloring),
+                    # length of output line with the word (end of coloring)
                     tag_positions.append((color_code, len(output_line) - len(word), len(output_line)))
+                    
                     last_end_index = end_index
+            
             outputTextBox.insert('end', output_line + '\n')
+            # Keep track of line
+            line_num += 1
+            print(f"Tag Position:{tag_positions} \nTranslated Line:{output_line}")
 
             for color_code, start_index, end_index in tag_positions:
-                tag_start = f'1.0 + {start_index}c'
-                tag_end = f'1.0 + {end_index}c'
+                tag_start = f'{line_num}.{start_index}'
+                tag_end = f'{line_num}.{end_index}'
                 tag_name = f"color_{start_index}"
                 outputTextBox.tag_add(tag_name, tag_start, tag_end)
                 outputTextBox.tag_config(tag_name, foreground=color_codes[color_code], font=("Bahnschrift Light", 10, "bold"))
