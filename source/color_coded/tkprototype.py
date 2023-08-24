@@ -71,9 +71,6 @@ def translate():
                     output_line += word_data
                 else:
                     word, color_code, start_index, end_index = word_data
-                    spaces = start_index - last_end_index
-                    if spaces > 0:
-                        output_line += " " * spaces
                     output_line += word
                     tag_positions.append((color_code, len(output_line) - len(word), len(output_line)))
                     last_end_index = end_index
