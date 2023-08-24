@@ -7,3 +7,4 @@ Use the links below - we would love to hear from you!
 - https://www.linkedin.com/in/keshawn-clark-6b2570224/
 - http://linkedin.com/in/sky-harper
 - https://www.linkedin.com/in/lanielle-pavlik-496581271/
+- https://www.linkedin.com/in/samuel-donovan-2382a528a/
