@@ -1,16 +1,15 @@
 import tkinter as tk
 from tkinter import ttk, Frame
 import pyperclip
-# from tkinter import messagebox
 from langdetect import detect
 import threading
 from langdetect.lang_detect_exception import LangDetectException
 from code_translator import translate_line, glossary, glossary_by_language
 import datetime
-import requests
 import openai
 from gpt4all import GPT4All
-import tkinter.messagebox
+
+from googletrans import Translator # I know it's gross code, we didn't have a choice
 
 translated_language = "es"
 
@@ -50,8 +49,10 @@ def lang_abbreviation_to_full(abbr: str):
     return conversion[abbr] if abbr in conversion else "Unrecognized Language"
 
 
-def get_code_summary(code, summary_model):
-    summary_prompt = f"Please summarize the following code:\n{code}"
+def get_code_summary(code, summary_model, lang):
+    translator = Translator()
+    summary_prompt = translator.translate("Please summarize the following code:", dest=lang).text
+    summary_prompt += f"\n{code}"
 
     if summary_model == "openai":
         openai_api_key = "YOUR-API-KEY-HERE"
@@ -115,7 +116,7 @@ def translate():
         # summary_textbox.insert("1.0", code_summary)
         if tk.messagebox.askyesno("Code Summary", "Would you like to get a summary of this translated code?"):
             summary_model = summary_model_var.get()
-            code_summary = get_code_summary(input_text, summary_model)
+            code_summary = get_code_summary(input_text, summary_model, translated_language)
             summary_textbox.delete("1.0", tk.END)
             summary_textbox.insert("1.0", code_summary)
 
