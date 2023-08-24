@@ -168,10 +168,11 @@ def view_history():
         history_tree.insert("", tk.END, values=(timestamp, language, input_text, translated_text))
 
     def revert_to_selected():
-        selected_item = history_tree.selection()[0]
-        selected_translation = history_tree.item(selected_item)["values"][3]
+        selected_items = history_tree.selection()
+        selected_translations = [history_tree.item(item)["values"][3] for item in selected_items]
+        concatenated_translation = "\n".join(selected_translations)
         outputTextBox.delete("1.0", tk.END)
-        outputTextBox.insert("1.0", selected_translation)
+        outputTextBox.insert("1.0", concatenated_translation)
 
     revert_button = tk.Button(history_window, text="Revert to Selected", command=revert_to_selected)
     revert_button.pack()
@@ -445,8 +446,8 @@ summary_label.place(relx=0, rely=0.45, relwidth=0.8, relheight=0.05)
 summary_textbox = tk.Text(settings_frame, height=5, wrap=tk.WORD)
 summary_textbox.place(relx=0, rely=0.5, relwidth=0.8, relheight=0.45)
 
-# view_history_button = tk.Button(window, text="View History", command=view_history)
-# view_history_button.pack()
+view_history_button = tk.Button(window, text="View History", command=view_history)
+view_history_button.pack()
 
 
 window.mainloop()
