@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, Frame
+from tkinter import ttk, Frame, messagebox
 import pyperclip
 from langdetect import detect
 import threading
@@ -49,9 +49,10 @@ def lang_abbreviation_to_full(abbr: str):
     return conversion[abbr] if abbr in conversion else "Unrecognized Language"
 
 
-def get_code_summary(code, summary_model, lang):
+def get_code_summary(code, summary_model):
+    global translated_language
     translator = Translator()
-    summary_prompt = translator.translate("Please summarize the following code:", dest=lang).text
+    summary_prompt = translator.translate("Please summarize the following code:", dest=translated_language).text
     summary_prompt += f"\n{code}"
 
     if summary_model == "openai":
@@ -116,7 +117,7 @@ def translate():
         # summary_textbox.insert("1.0", code_summary)
         if tk.messagebox.askyesno("Code Summary", "Would you like to get a summary of this translated code?"):
             summary_model = summary_model_var.get()
-            code_summary = get_code_summary(input_text, summary_model, translated_language)
+            code_summary = get_code_summary(input_text, summary_model)
             summary_textbox.delete("1.0", tk.END)
             summary_textbox.insert("1.0", code_summary)
 
@@ -435,15 +436,10 @@ fileTypeOptionMenu.place(relx=0, rely=0.25, relwidth=0.35, relheight=0.05)
 saveButton = tk.Button(settings_frame, text="Save", command=saveFile, background="grey80")
 saveButton.place(relx=0.45, rely=0.25, relwidth=0.35, relheight=0.05)
 
-# glossary_button = tk.Button(window, text="Manage Glossary", command=manage_glossary)
-# glossary_button.pack()
 
-# view_glossary_button = tk.Button(window, text="View Glossary", command=view_glossary)
-# view_glossary_button.pack()
+summary_language_label = tk.Label(settings_frame, text="Summary Language:")
+summary_language_label.place(relx=0, rely=0.35)
 
-
-summary_language_label = tk.Label(window, text="Summary Language:")
-summary_language_label.pack()
 summary_language_var = tk.StringVar()
 summary_language_var.set("en")  # Default to English
 summary_language_dropdown = ttk.Combobox(window, textvariable=summary_language_var)
